@@ -44,17 +44,37 @@ from cflib.crazyflie.log import LogConfig
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.crazyflie.syncLogger import SyncLogger
 
+import threading as th
+
+kill_flight = False
+def key_capture_thread():
+    global kill_flight
+    input()
+    kill_flight = True
+
+
 # URI to the Crazyflie to connect to
 uri = 'radio://0/80/2M'
 
 # Change the sequence according to your setup
 #             x    y    z
 sequence = [
-    (0, 0, 0.7),
-    (-0.7, 0, 0.7),
-    (0, 0, 0.7),
-    (0, 0, 0.2),
+    (0, 0, 1.0),
+    (0, 0, 0.6)
 ]
+
+#sequence = [
+#    (0, 0, 1.2),
+#    (-0.7, 0, 1.2),
+#    (0, -0.7, 1.2),
+#    (0, 0, 1.2),
+#    (0, 0, 1.2),
+#    (0, 0, 1.2),
+#    (0, 0, 1.2),
+#    (0, 0, 1.2),
+#    (0, 0, 1.2),
+#    (0, 0, 0.25),
+#]
 
 
 def wait_for_position_estimator(scf):
@@ -89,8 +109,8 @@ def wait_for_position_estimator(scf):
             min_z = min(var_z_history)
             max_z = max(var_z_history)
 
-            # print("{} {} {}".
-            #       format(max_x - min_x, max_y - min_y, max_z - min_z))
+            print("{} {} {}".
+                  format(max_x - min_x, max_y - min_y, max_z - min_z))
 
             if (max_x - min_x) < threshold and (
                     max_y - min_y) < threshold and (
@@ -118,8 +138,25 @@ def reset_estimator(scf):
 
 def run_sequence(scf, sequence, base_x, base_y, base_z, yaw):
     cf = scf.cf
+    
+    # unlock the engines
+    cf.commander.send_setpoint(0.0, 0.0, 0, 0)
+
+    # start listening to Enter key
+    th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
+    
+    print('Starting engines (press enter to kill)')
+
+    for i in range(10):
+        if kill_flight:
+            break
+        
+        cf.commander.send_setpoint(0.0, 0.0, 0, 20000)
+        time.sleep(0.1)
+        
 
     for position in sequence:
+        
         print('Setting position {}'.format(position))
 
         x = position[0] + base_x
@@ -127,6 +164,10 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, yaw):
         z = position[2] + base_z
 
         for i in range(50):
+            if kill_flight:
+                cf.commander.send_stop_setpoint()
+                print('Drone killed')
+                return
             cf.commander.send_position_setpoint(x, y, z, yaw)
             time.sleep(0.1)
 
@@ -141,10 +182,10 @@ if __name__ == '__main__':
 
     # Set these to the position and yaw based on how your Crazyflie is placed
     # on the floor
-    initial_x = 1.0
-    initial_y = 1.0
+    initial_x = 0.0
+    initial_y = 0.0
     initial_z = 0.0
-    initial_yaw = 90  # In degrees
+    initial_yaw = 0  # In degrees
     # 0: positive X direction
     # 90: positive Y direction
     # 180: negative X direction
