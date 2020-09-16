@@ -59,11 +59,17 @@ uri = 'radio://0/80/2M'
 # Change the sequence according to your setup
 #             x    y    z
 sequence = [
-    (0.3, 0, 1.0),
+    (0, 0, 1.5),
+    (1.0, 0, 1.5),
+    (0, 0, 1.5),
+    (0, 1.0, 1.5),
+    (0, 0, 1.5),
+    (0, 0, 1.0),
+    (0, 0, 0.65),
 ]
 
-startup_thrust=15000
-hover_thrust = 27000
+startup_thrust=14000
+hover_thrust = 33000
 takeoff_thrust = int(1.3*hover_thrust)
 # hover_thrust=0
 # takeoff_thrust=0
@@ -291,7 +297,7 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, yaw):
             break
         
         print_position()
-        print_pos_control()
+        # print_pos_control()
         # print_control()
 
         cf.commander.send_setpoint(0.0, 0.0, 0, startup_thrust)
@@ -304,7 +310,7 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, yaw):
             break
         
         print_position()
-        print_pos_control()
+        # print_pos_control()
         # print_control()
 
         cf.commander.send_setpoint(0.0, 0.0, 0, takeoff_thrust)
@@ -320,14 +326,14 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, yaw):
         y = position[1] + base_y
         z = position[2] + base_z
 
-        for i in range(500):
+        for i in range(30):
             if kill_flight:
                 cf.commander.send_stop_setpoint()
                 print('Drone killed')
                 return
 
             print_position()
-            print_pos_control()
+            # print_pos_control()
             # print_control()
             # print_position_setpoint()
 
