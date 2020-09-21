@@ -43,6 +43,8 @@ from cflib.crazyflie import Crazyflie
 from cflib.crazyflie.log import LogConfig
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.crazyflie.syncLogger import SyncLogger
+from datetime import datetime
+import time
 
 import threading as th
 
@@ -52,24 +54,33 @@ def key_capture_thread():
     input()
     kill_flight = True
 
-
-# URI to the Crazyflie to connect to
-uri = 'radio://0/80/2M'
+# Adress of the drone
+address = 'E7E7E7E7E0' # NimbleFlapper 2.0 Roadrunner
+# URI to the drone to connect to
+uri = 'radio://0/80/2M/' + address
 
 # Change the sequence according to your setup
 #             x    y    z
+# sequence = [
+#     (0, 0, 1.5),
+#     (1.0, 0, 1.5),
+#     (0, 0, 1.5),
+#     (0, 1.0, 1.5),
+#     (0, 0, 1.5),
+#     (0, 0, 1.0),
+#     (0, 0, 0.65),
+# ]
+
 sequence = [
-    (0, 0, 1.5),
-    (1.0, 0, 1.5),
-    (0, 0, 1.5),
-    (0, 1.0, 1.5),
-    (0, 0, 1.5),
+    (0, 0, 1.25),
+    (0, 0, 1.25),
+    (0, 0, 1.0),
     (0, 0, 1.0),
     (0, 0, 0.65),
 ]
 
 startup_thrust=14000
-hover_thrust = 33000
+hover_thrust = 40000
 takeoff_thrust = int(1.3*hover_thrust)
 # hover_thrust=0
 # takeoff_thrust=0
@@ -131,42 +142,20 @@ def wait_for_position_estimator(scf):
 
 def set_control_parameters(scf):
     print('Setting control parameters for Nimble Plus')
-    # scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    # scf.cf.param.set_value('posCtlPid.xKp', '32.0')
-    # scf.cf.param.set_value('posCtlPid.xKi', '0.0')
-    # scf.cf.param.set_value('posCtlPid.xKd', '8.0')
-    # scf.cf.param.set_value('posCtlPid.yKp', '32.0')
-    # scf.cf.param.set_value('posCtlPid.yKi', '0.0')
-    # scf.cf.param.set_value('posCtlPid.yKd', '8.0')
-    # scf.cf.param.set_value('posCtlPid.zKp', '62.5')
-    # scf.cf.param.set_value('posCtlPid.zKi', '0.5')
-    # scf.cf.param.set_value('posCtlPid.zKd', '12.5')
-    # scf.cf.param.set_value('posCtlPid.rpLimit', '30.0')
-    # scf.cf.param.set_value('posCtlPid.xyVelMax', '1.0')
-    # scf.cf.param.set_value('posCtlPid.zVelMax', '1.0')
-    # scf.cf.param.set_value('velCtlPid.vxKp', '1.0')
-    # scf.cf.param.set_value('velCtlPid.vxKi', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vxKd', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vyKp', '1.0')
-    # scf.cf.param.set_value('velCtlPid.vyKi', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vyKd', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vzKp', '1.0')
-    # scf.cf.param.set_value('velCtlPid.vzKi', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
-
+    
     scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
     # scf.cf.param.set_value('posCtlPid.xKp', '0.0')
     # scf.cf.param.set_value('posCtlPid.xKi', '0.0')
     # scf.cf.param.set_value('posCtlPid.xKd', '0.0')
     scf.cf.param.set_value('posCtlPid.xKp', '32.0') #32
     scf.cf.param.set_value('posCtlPid.xKi', '0.0')
-    scf.cf.param.set_value('posCtlPid.xKd', '0.0') #8
+    scf.cf.param.set_value('posCtlPid.xKd', '4.0') #8
     # scf.cf.param.set_value('posCtlPid.yKp', '0.0')
     # scf.cf.param.set_value('posCtlPid.yKi', '0.0')
     # scf.cf.param.set_value('posCtlPid.yKd', '0.0')
     scf.cf.param.set_value('posCtlPid.yKp', '17.0') #17
     scf.cf.param.set_value('posCtlPid.yKi', '0.0')
-    scf.cf.param.set_value('posCtlPid.yKd', '0.0') #10
+    scf.cf.param.set_value('posCtlPid.yKd', '5.0') #10
     # scf.cf.param.set_value('posCtlPid.zKp', '0')
     # scf.cf.param.set_value('posCtlPid.zKi', '0')
     # scf.cf.param.set_value('posCtlPid.zKd', '0')
@@ -186,29 +175,7 @@ def set_control_parameters(scf):
     # scf.cf.param.set_value('velCtlPid.vzKi', '0.0')
     # scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
 
-    # scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    # scf.cf.param.set_value('posCtlPid.xKp', '4.0')
-    # scf.cf.param.set_value('posCtlPid.xKi', '0.0')
-    # scf.cf.param.set_value('posCtlPid.xKd', '0.0')
-    # scf.cf.param.set_value('posCtlPid.yKp', '4.0')
-    # scf.cf.param.set_value('posCtlPid.yKi', '0.0')
-    # scf.cf.param.set_value('posCtlPid.yKd', '0.0')
-    # scf.cf.param.set_value('posCtlPid.zKp', '0.0')
-    # scf.cf.param.set_value('posCtlPid.zKi', '0.0')
-    # scf.cf.param.set_value('posCtlPid.zKd', '0.0')
-    # scf.cf.param.set_value('posCtlPid.rpLimit', '30.0')
-    # scf.cf.param.set_value('posCtlPid.xyVelMax', '1.0')
-    # scf.cf.param.set_value('posCtlPid.zVelMax', '1.0')
-    # scf.cf.param.set_value('velCtlPid.vxKp', '8.0')
-    # scf.cf.param.set_value('velCtlPid.vxKi', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vxKd', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vyKp', '8.0')
-    # scf.cf.param.set_value('velCtlPid.vyKi', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vyKd', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vzKp', '0.1')
-    # scf.cf.param.set_value('velCtlPid.vzKi', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
-
+    
 def set_initial_position(scf, x, y, z, yaw_deg):
     scf.cf.param.set_value('kalman.initialX', x)
     scf.cf.param.set_value('kalman.initialY', y)
@@ -232,55 +199,53 @@ def reset_estimator(scf):
 
     wait_for_position_estimator(cf)
 
-def print_battery():
+def print_battery(f):
     with SyncLogger(scf, lg_pm) as logger:
         for log_entry in logger:
             timestamp = log_entry[0]
             data = log_entry[1]
             
-            print('[%d]: %s' % (timestamp, data))
+            print('[%d]: %s' % (timestamp, data), file=f)
             break
 
-def print_pos_control():
+def print_pos_control(f):
     with SyncLogger(scf, lg_posCtl) as logger:
         for log_entry in logger:
             timestamp = log_entry[0]
             data = log_entry[1]
             
-            print('[%d]: %s' % (timestamp, data))
+            print('[%d]: %s' % (timestamp, data), file=f)
             break
 
-def print_control():
+def print_control(f):
     with SyncLogger(scf, lg_control) as logger:
         for log_entry in logger:
             timestamp = log_entry[0]
             data = log_entry[1]
             
-            print('[%d]: %s' % (timestamp, data))
+            print('[%d]: %s' % (timestamp, data), file=f)
             break
 
-def print_position():
+def print_state(f):
     with SyncLogger(scf, lg_posEst) as logger:
         for log_entry in logger:
             timestamp = log_entry[0]
             data = log_entry[1]
-            # logconf_name = logger[2]
 
-            print('[%d]: %s' % (timestamp, data))
+            print('[%d]: %s' % (timestamp, data), file=f)
             break
 
-# def print_position_setpoint():
-#     with SyncLogger(scf, lg_posSet) as logger:
-#         for log_entry in logger:
-#             timestamp = log_entry[0]
-#             data = log_entry[1]
-#             # logconf_name = logger[2]
+def print_control_target(f):
+    with SyncLogger(scf, lg_ctrltarget) as logger:
+        for log_entry in logger:
+            timestamp = log_entry[0]
+            data = log_entry[1]
 
-#             print('[%d]: %s' % (timestamp, data))
-#             break
+            print('[%d]: %s' % (timestamp, data), file=f)
+            break
 
 
-def run_sequence(scf, sequence, base_x, base_y, base_z, yaw):
+def run_sequence(scf, sequence, base_x, base_y, base_z, yaw, f):
     cf = scf.cf
     
     # unlock the engines
@@ -289,53 +254,53 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, yaw):
     # start listening to Enter key
     th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
     
-    print_battery()
+    print_battery(f)
     print('Starting engines (press enter to kill)')
 
-    for i in range(10):
+    time0 = time.time()
+    while (time.time()-time0) < 0.5:
         if kill_flight:
             break
         
-        print_position()
-        # print_pos_control()
-        # print_control()
+        print_state(f)
+        print_control(f)
 
         cf.commander.send_setpoint(0.0, 0.0, 0, startup_thrust)
-        time.sleep(0.1)
+        time.sleep(0.05)
     
-    print_battery()
+    print_battery(f)
     print('Taking off (press enter to kill)')
-    for i in range(5):
+    time0 = time.time()
+    while (time.time()-time0) < 0.5:
         if kill_flight:
             break
         
-        print_position()
-        # print_pos_control()
-        # print_control()
+        print_state(f)
+        print_control(f)
 
         cf.commander.send_setpoint(0.0, 0.0, 0, takeoff_thrust)
-        time.sleep(0.1)
+        time.sleep(0.05)
         
 
     for position in sequence:
         
-        print_battery()
+        print_battery(f)
+        print('Setting position {}'.format(position), file=f)
         print('Setting position {}'.format(position))
 
         x = position[0] + base_x
         y = position[1] + base_y
         z = position[2] + base_z
 
-        for i in range(30):
+        time0 = time.time()
+        while (time.time()-time0) < 3.0:
             if kill_flight:
                 cf.commander.send_stop_setpoint()
                 print('Drone killed')
                 return
 
-            print_position()
-            # print_pos_control()
-            # print_control()
-            # print_position_setpoint()
+            print_state(f)
+            print_control(f)
 
             cf.commander.send_position_setpoint(x, y, z, yaw)
             time.sleep(0.1)
@@ -365,6 +330,9 @@ if __name__ == '__main__':
     lg_posEst.add_variable('stateEstimate.x', 'float')
     lg_posEst.add_variable('stateEstimate.y', 'float')
     lg_posEst.add_variable('stateEstimate.z', 'float')
+    lg_posEst.add_variable('stateEstimate.roll', 'float')
+    lg_posEst.add_variable('stateEstimate.pitch', 'float')
+    lg_posEst.add_variable('stateEstimate.yaw', 'float')
 
     # lg_posSet = LogConfig(name='posCtl', period_in_ms=20)
     # lg_posSet.add_variable('posCtl.targetX', 'float')
@@ -383,16 +351,28 @@ if __name__ == '__main__':
     lg_posCtl.add_variable('posCtl.VZp', 'float')
 
     lg_control = LogConfig(name='controller', period_in_ms=20)
-    lg_control.add_variable('controller.cmd_pitch', 'float')
-    lg_control.add_variable('controller.cmd_roll', 'float')
-    lg_control.add_variable('controller.cmd_yaw', 'float')
+    lg_control.add_variable('controller.roll', 'float') # these are setpoints!!!
+    lg_control.add_variable('controller.pitch', 'float')
+    lg_control.add_variable('controller.yaw', 'float')
     lg_control.add_variable('controller.cmd_thrust', 'float')
+
+    lg_ctrltarget = LogConfig(name='ctrltarget', period_in_ms=20)
+    lg_ctrltarget.add_variable('ctrltarget.roll', 'float') # pointing to &setpoint.attitude.roll, which seems to never be set in the code 
+    lg_ctrltarget.add_variable('ctrltarget.pitch', 'float')
+    lg_ctrltarget.add_variable('ctrltarget.yaw', 'float')
+    lg_ctrltarget.add_variable('ctrltarget.x', 'float')
+    lg_ctrltarget.add_variable('ctrltarget.y', 'float')
+    lg_ctrltarget.add_variable('ctrltarget.z', 'float')
+
+
+    
     
     with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
-        reset_tumble_detector(scf)
-        set_control_parameters(scf)
-        print_battery()
-        set_initial_position(scf, initial_x, initial_y, initial_z, initial_yaw)
-        reset_estimator(scf)
-        run_sequence(scf, sequence,
-                     initial_x, initial_y, initial_z, initial_yaw)
+        with open('flight_log_' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.txt', 'w') as f:
+            print('Flight log' + datetime.now().strftime("%Y%m%d %H%M%S"), file=f)
+            reset_tumble_detector(scf)
+            set_control_parameters(scf)
+            print_battery(f)
+            set_initial_position(scf, initial_x, initial_y, initial_z, initial_yaw)
+            reset_estimator(scf)
+            run_sequence(scf, sequence, initial_x, initial_y, initial_z, initial_yaw, f)
