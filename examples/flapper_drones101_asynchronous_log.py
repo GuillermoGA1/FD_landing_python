@@ -72,43 +72,35 @@ uri = 'radio://0/80/2M/' + address
 # ]
 
 sequence = [
-    (0, 0, 1.25),
-    (0, 0, 1.25),
-    (0, 0, 1.0),
-    (0, 0, 1.0),
-    (0, 0, 1.0),
-    (0, 0, 1.0),
-    (0, 0, 1.0),
-    (0, 0, 1.0),
-    (0, 0, 1.0),
-    (0, 0, 1.0),
-    (0, 0, 1.0),
-    (0, 0, 1.0),
-    (0, 0, 1.0),
-    (0, 0, 1.0),
-    (0, 0, 1.0),
-    (0, 0, 1.0),
-    (0, 0, 0.65),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 1.0),
+    (0, 0.25, 0.65),
 ]
 
 startup_thrust=14000
 hover_thrust = 40000
 takeoff_thrust = int(1.3*hover_thrust)
-# hover_thrust=0
-# takeoff_thrust=0
-
-#sequence = [
-#    (0, 0, 1.2),
-#    (-0.7, 0, 1.2),
-#    (0, -0.7, 1.2),
-#    (0, 0, 1.2),
-#    (0, 0, 1.2),
-#    (0, 0, 1.2),
-#    (0, 0, 1.2),
-#    (0, 0, 1.2),
-#    (0, 0, 1.2),
-#    (0, 0, 0.25),
-#]
 
 
 def wait_for_position_estimator(scf):
@@ -156,21 +148,12 @@ def set_control_parameters(scf):
     print('Setting control parameters for Nimble Plus')
     
     scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    # scf.cf.param.set_value('posCtlPid.xKp', '0.0')
-    # scf.cf.param.set_value('posCtlPid.xKi', '0.0')
-    # scf.cf.param.set_value('posCtlPid.xKd', '0.0')
     scf.cf.param.set_value('posCtlPid.xKp', '32.0') #32
     scf.cf.param.set_value('posCtlPid.xKi', '0.0')
     scf.cf.param.set_value('posCtlPid.xKd', '4.0') #8
-    # scf.cf.param.set_value('posCtlPid.yKp', '0.0')
-    # scf.cf.param.set_value('posCtlPid.yKi', '0.0')
-    # scf.cf.param.set_value('posCtlPid.yKd', '0.0')
     scf.cf.param.set_value('posCtlPid.yKp', '17.0') #17
     scf.cf.param.set_value('posCtlPid.yKi', '0.0')
     scf.cf.param.set_value('posCtlPid.yKd', '5.0') #10
-    # scf.cf.param.set_value('posCtlPid.zKp', '0')
-    # scf.cf.param.set_value('posCtlPid.zKi', '0')
-    # scf.cf.param.set_value('posCtlPid.zKd', '0')
     scf.cf.param.set_value('posCtlPid.zKp', '62.5')
     scf.cf.param.set_value('posCtlPid.zKi', '6.0')
     scf.cf.param.set_value('posCtlPid.zKd', '12.6')
@@ -211,73 +194,39 @@ def reset_estimator(scf):
 
     wait_for_position_estimator(cf)
 
-def print_battery(f):
-    with SyncLogger(scf, lg_pm) as logger:
-        for log_entry in logger:
-            timestamp = log_entry[0]
-            data = log_entry[1]
+def log_async_setup(scf, logconf):
+    cf = scf.cf
+    cf.log.add_config(logconf)
+    logconf.data_received_cb.add_callback(log_async_callback)
+
+def log_and_print_async_setup(scf, logconf):
+    cf = scf.cf
+    cf.log.add_config(logconf)
+    logconf.data_received_cb.add_callback(log_and_print_async_callback)
+
+def log_async_callback(timestamp, data, logconf):
+    print('[%d]: %s' % (timestamp, data), file=f)
+    if 'pm.vbat' in data:
+        global vbat
+        vbat = data['pm.vbat']
             
-            print('[%d]: %s' % (timestamp, data), file=f)
-            print('[%d]: %s' % (timestamp, data))
-            break
-
-def print_pos_control(f):
-    with SyncLogger(scf, lg_posCtl) as logger:
-        for log_entry in logger:
-            timestamp = log_entry[0]
-            data = log_entry[1]
-            
-            print('[%d]: %s' % (timestamp, data), file=f)
-            break
-
-def print_control(f):
-    with SyncLogger(scf, lg_control) as logger:
-        for log_entry in logger:
-            timestamp = log_entry[0]
-            data = log_entry[1]
-            
-            print('[%d]: %s' % (timestamp, data), file=f)
-            break
-
-def print_state(f):
-    with SyncLogger(scf, lg_posEst) as logger:
-        for log_entry in logger:
-            timestamp = log_entry[0]
-            data = log_entry[1]
-
-            print('[%d]: %s' % (timestamp, data), file=f)
-            break
-
-def print_control_target(f):
-    with SyncLogger(scf, lg_ctrltarget) as logger:
-        for log_entry in logger:
-            timestamp = log_entry[0]
-            data = log_entry[1]
-
-            print('[%d]: %s' % (timestamp, data), file=f)
-            break
-
-def print_all(f):
-    config =[lg_posEst]
-    with SyncLogger(scf, config) as logger:
-        for log_entry in logger:
-            timestamp = log_entry[0]
-            data = log_entry[1]
-
-            print('[%d]: %s' % (timestamp, data), file=f)
-            break
-
+def log_and_print_async_callback(timestamp, data, logconf):
+    print('[%d]: %s' % (timestamp, data), file=f)
+    print('[%d]: %s' % (timestamp, data))
 
 def run_sequence(scf, sequence, base_x, base_y, base_z, yaw, f):
     cf = scf.cf
     
+    ## TODO 
+    # - rewrite as a state-machine
+    # - check for vbat and if too low land - implement as an exception callback?
+
     # unlock the engines
     cf.commander.send_setpoint(0.0, 0.0, 0, 0)
 
     # start listening to Enter key
     th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
     
-    print_battery(f)
     print('Starting engines (press enter to kill)')
 
     time0 = time.time()
@@ -285,31 +234,24 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, yaw, f):
         if kill_flight:
             break
         
-        print_state(f)
-        # print_control(f)
-
         cf.commander.send_setpoint(0.0, 0.0, 0, startup_thrust)
-        time.sleep(0.2)
+        time.sleep(0.1)
     
-    print_battery(f)
     print('Taking off (press enter to kill)')
     time0 = time.time()
     while (time.time()-time0) < 0.5:
         if kill_flight:
             break
         
-        print_state(f)
-        # print_control(f)
-
         cf.commander.send_setpoint(0.0, 0.0, 0, takeoff_thrust)
-        time.sleep(0.2)
+        time.sleep(0.1)
         
 
     for position in sequence:
         
-        print_battery(f)
         print('Setting position {}'.format(position), file=f)
         print('Setting position {}'.format(position))
+        print('Battery voltage is {}' .format(vbat))
 
         x = position[0] + base_x
         y = position[1] + base_y
@@ -322,11 +264,8 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, yaw, f):
                 print('Drone killed')
                 return
 
-            print_state(f)
-            # print_control(f)
-
             cf.commander.send_position_setpoint(x, y, z, yaw)
-            time.sleep(0.2)
+            time.sleep(0.1)
 
     cf.commander.send_stop_setpoint()
     # Make sure that the last packet leaves before the link is closed
@@ -349,53 +288,55 @@ if __name__ == '__main__':
     # 270: negative Y direction
 
     # define logging parameters
-    lg_posEst = LogConfig(name='stateEstimate', period_in_ms=20)
-    lg_posEst.add_variable('stateEstimate.x', 'float')
-    lg_posEst.add_variable('stateEstimate.y', 'float')
-    lg_posEst.add_variable('stateEstimate.z', 'float')
-    lg_posEst.add_variable('stateEstimate.roll', 'float')
-    lg_posEst.add_variable('stateEstimate.pitch', 'float')
-    lg_posEst.add_variable('stateEstimate.yaw', 'float')
+    log_state = LogConfig(name='stateEstimate', period_in_ms=20)
+    log_state.add_variable('stateEstimate.x', 'float')
+    log_state.add_variable('stateEstimate.y', 'float')
+    log_state.add_variable('stateEstimate.z', 'float')
+    log_state.add_variable('stateEstimate.roll', 'float')
+    log_state.add_variable('stateEstimate.pitch', 'float')
+    log_state.add_variable('stateEstimate.yaw', 'float')
 
-    # lg_posSet = LogConfig(name='posCtl', period_in_ms=20)
-    # lg_posSet.add_variable('posCtl.targetX', 'float')
-    # lg_posSet.add_variable('posCtl.targetY', 'float')
-    # lg_posSet.add_variable('posCtl.targetZ', 'float')
-
-    lg_pm = LogConfig(name='pm', period_in_ms=20)
-    lg_pm.add_variable('pm.vbat', 'float')
+    log_vbat = LogConfig(name='pm', period_in_ms=500)
+    log_vbat.add_variable('pm.vbat', 'float')
     
-    lg_posCtl = LogConfig(name='posCtl', period_in_ms=20)
-    lg_posCtl.add_variable('posCtl.Xp', 'float')
-    lg_posCtl.add_variable('posCtl.Yp', 'float')
-    lg_posCtl.add_variable('posCtl.Zp', 'float')
-    lg_posCtl.add_variable('posCtl.Zi', 'float')
-    lg_posCtl.add_variable('posCtl.VXp', 'float')
-    lg_posCtl.add_variable('posCtl.VZp', 'float')
-
-    lg_control = LogConfig(name='controller', period_in_ms=20)
-    lg_control.add_variable('controller.roll', 'float') # these are setpoints!!!
-    lg_control.add_variable('controller.pitch', 'float')
-    lg_control.add_variable('controller.yaw', 'float')
-    lg_control.add_variable('controller.cmd_thrust', 'float')
-
-    lg_ctrltarget = LogConfig(name='ctrltarget', period_in_ms=20)
-    lg_ctrltarget.add_variable('ctrltarget.roll', 'float') # pointing to &setpoint.attitude.roll, which seems to never be set in the code 
-    lg_ctrltarget.add_variable('ctrltarget.pitch', 'float')
-    lg_ctrltarget.add_variable('ctrltarget.yaw', 'float')
-    lg_ctrltarget.add_variable('ctrltarget.x', 'float')
-    lg_ctrltarget.add_variable('ctrltarget.y', 'float')
-    lg_ctrltarget.add_variable('ctrltarget.z', 'float')
-
-
+    log_set = LogConfig(name='controller', period_in_ms=20)
+    log_set.add_variable('controller.roll', 'float') # these are setpoints!!!
+    log_set.add_variable('controller.pitch', 'float')
+    log_set.add_variable('controller.yaw', 'float')
     
+    log_cmd = LogConfig(name='controller', period_in_ms=20)
+    log_cmd.add_variable('controller.cmd_thrust', 'float')
+    log_cmd.add_variable('controller.cmd_roll', 'float')
+    log_cmd.add_variable('controller.cmd_pitch', 'float')
+    log_cmd.add_variable('controller.cmd_yaw', 'float')
     
     with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
         with open('/home/matej/bitcraze/FlightLogs/flight_log_' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.txt', 'w') as f:
             print('Flight log' + datetime.now().strftime("%Y%m%d %H%M%S"), file=f)
+            
+            log_async_setup(scf, log_state)
+            log_async_setup(scf, log_set)
+            log_async_setup(scf, log_cmd)
+            log_async_setup(scf, log_vbat)
+
+            log_vbat.start()
+            
+            time.sleep(1)
+            print('Battery voltage is {}' .format(vbat))
+            
             reset_tumble_detector(scf)
             set_control_parameters(scf)
-            print_battery(f)
             set_initial_position(scf, initial_x, initial_y, initial_z, initial_yaw)
             reset_estimator(scf)
+            
+            log_state.start()
+            log_set.start()
+            log_cmd.start()
+
             run_sequence(scf, sequence, initial_x, initial_y, initial_z, initial_yaw, f)
+
+            log_state.stop()
+            log_set.stop()
+            log_cmd.stop()
+            log_vbat.stop()
+            
