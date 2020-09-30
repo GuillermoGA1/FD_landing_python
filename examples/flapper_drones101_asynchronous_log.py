@@ -60,41 +60,43 @@ address = 'E7E7E7E7E0' # NimbleFlapper 2.0 Roadrunner
 uri = 'radio://0/80/2M/' + address
 
 # Change the sequence according to your setup
-#             x    y    z
-# sequence = [
-#     (0, 0, 1.5),
-#     (1.0, 0, 1.5),
-#     (0, 0, 1.5),
-#     (0, 1.0, 1.5),
-#     (0, 0, 1.5),
-#     (0, 0, 1.0),
-#     (0, 0, 0.65),
-# ]
-
+#             x    y    z   yaw[deg]
 sequence = [
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.25),
-    (0, 0.25, 1.0),
-    (0, 0.25, 0.65),
+    (0, 0.25, 1.25, 0.0),
+    (0, 0.25, 1.75, 0.0),
+    (0, 0.25, 1.75, 0.0),
+    (0, 0.25, 1.75, 0.0),
+    (0, 0.25, 1.75, 0.0),
+    (1.0, 0.25, 1.75, 0.0),
+    (1.0, 0.25, 1.75, 0.0),
+    (1.0, 0.25, 1.75, 0.0),
+    (0, 0.25, 1.75, 0.0),
+    (0, 0.25, 1.75, 0.0),
+    (0, 0.25, 1.75, 0.0),
+    (0, 1.25, 1.75, 0.0),
+    (0, 1.25, 1.75, 0.0),
+    (0, 1.25, 1.75, 0.0),
+    (0, 0.25, 1.75, 0.0),
+    (0, 0.25, 1.75, 0.0),
+    (0, 0.25, 1.75, 0.0),
+    (0, 0.25, 1.75, 90.0),
+    (0, 0.25, 1.75, 90.0),
+    (0, 0.25, 1.75, 180.0),
+    (0, 0.25, 1.75, 180.0),
+    (0, 0.25, 1.75, 270.0),
+    (0, 0.25, 1.75, 270.0),
+    (0, 0.25, 1.75, 0.0),
+    (0, 0.25, 1.75, 0.0),
+    (0, 0.25, 1.1, 0.0),
+    (0, 0.25, 1.1, 0.0),
+    (0, 0.25, 1.1, 0.0),
+    (0, 0.25, 0.65, 0.0),
 ]
 
-startup_thrust=14000
+startup_thrust=15000
 hover_thrust = 40000
 takeoff_thrust = int(1.3*hover_thrust)
+landing_thrust = 32000
 
 
 def wait_for_position_estimator(scf):
@@ -142,7 +144,7 @@ def set_control_parameters(scf):
     print('Setting control parameters for Nimble Plus')
     
     scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    scf.cf.param.set_value('posCtlPid.thrustMin', '20000')
+    scf.cf.param.set_value('posCtlPid.thrustMin', '30000')
     scf.cf.param.set_value('posCtlPid.xKp', '32.0') #32
     scf.cf.param.set_value('posCtlPid.xKi', '2.0')
     scf.cf.param.set_value('posCtlPid.xKd', '8.0') #8
@@ -215,7 +217,7 @@ def log_and_print_async_callback(timestamp, data, logconf):
     print('[%d]: %s' % (timestamp, data), file=f)
     print('[%d]: %s' % (timestamp, data))
 
-def run_sequence(scf, sequence, base_x, base_y, base_z, yaw, f):
+def run_sequence(scf, sequence, base_x, base_y, base_z, f):
     cf = scf.cf
     
     ## TODO 
@@ -261,10 +263,14 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, yaw, f):
         x = position[0] + base_x
         y = position[1] + base_y
         z = position[2] + base_z
+        yaw = position[3]
 
         time0 = time.time()
         while (time.time()-time0) < 3.0:
             if kill_flight:
+                cf.commander.send_setpoint(0.0, 0.0, 0.0, landing_thrust)
+                print('Drone forced to land')
+                time.sleep(3.0)
                 cf.commander.send_stop_setpoint()
                 print('Drone killed')
                 return
@@ -338,7 +344,7 @@ if __name__ == '__main__':
             log_set.start()
             log_cmd.start()
 
-            run_sequence(scf, sequence, initial_x, initial_y, initial_z, initial_yaw, f)
+            run_sequence(scf, sequence, initial_x, initial_y, initial_z, f)
 
             log_state.stop()
             log_set.stop()
