@@ -74,26 +74,20 @@ uri = 'radio://0/80/2M/' + address
 sequence = [
     (0, 0.25, 1.25),
     (0, 0.25, 1.25),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
-    (0, 0.25, 1.0),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
+    (0, 0.25, 1.25),
     (0, 0.25, 1.0),
     (0, 0.25, 0.65),
 ]
@@ -148,16 +142,23 @@ def set_control_parameters(scf):
     print('Setting control parameters for Nimble Plus')
     
     scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
+    scf.cf.param.set_value('posCtlPid.thrustMin', '20000')
     scf.cf.param.set_value('posCtlPid.xKp', '32.0') #32
-    scf.cf.param.set_value('posCtlPid.xKi', '0.0')
-    scf.cf.param.set_value('posCtlPid.xKd', '4.0') #8
-    scf.cf.param.set_value('posCtlPid.yKp', '17.0') #17
-    scf.cf.param.set_value('posCtlPid.yKi', '0.0')
-    scf.cf.param.set_value('posCtlPid.yKd', '5.0') #10
+    scf.cf.param.set_value('posCtlPid.xKi', '2.0')
+    scf.cf.param.set_value('posCtlPid.xKd', '8.0') #8
+    scf.cf.param.set_value('posCtlPid.yKp', '25.0') #25
+    scf.cf.param.set_value('posCtlPid.yKi', '2.0')
+    scf.cf.param.set_value('posCtlPid.yKd', '10.0') #10
     scf.cf.param.set_value('posCtlPid.zKp', '62.5')
     scf.cf.param.set_value('posCtlPid.zKi', '6.0')
     scf.cf.param.set_value('posCtlPid.zKd', '12.6')
     scf.cf.param.set_value('posCtlPid.rpLimit', '20.0')
+    scf.cf.param.set_value('pid_attitude.yaw_kp', '30.0') #30
+    scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0') #1
+    scf.cf.param.set_value('pid_rate.yaw_kp', '100.0') #100
+    scf.cf.param.set_value('pid_attitude.roll_kp', '15.0') #15
+    scf.cf.param.set_value('pid_attitude.roll_kd', '1.0') #1
+    scf.cf.param.set_value('pid_rate.roll_kp', '50.0') #50
     # scf.cf.param.set_value('posCtlPid.xyVelMax', '1.0')
     # scf.cf.param.set_value('posCtlPid.zVelMax', '1.0')
     # scf.cf.param.set_value('velCtlPid.vxKp', '0.0')
@@ -232,6 +233,8 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, yaw, f):
     time0 = time.time()
     while (time.time()-time0) < 0.5:
         if kill_flight:
+            cf.commander.send_stop_setpoint()
+            print('Drone killed')
             break
         
         cf.commander.send_setpoint(0.0, 0.0, 0, startup_thrust)
@@ -241,6 +244,8 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, yaw, f):
     time0 = time.time()
     while (time.time()-time0) < 0.5:
         if kill_flight:
+            cf.commander.send_stop_setpoint()
+            print('Drone killed')
             break
         
         cf.commander.send_setpoint(0.0, 0.0, 0, takeoff_thrust)
