@@ -86,12 +86,21 @@ sequence = [
     (0, 0.25, 1.75, 270.0),
     (0, 0.25, 1.75, 270.0),
     (0, 0.25, 1.75, 0.0),
-    (0, 0.25, 1.75, 0.0),
+    (0, 0.25, 1.3, 0.0),
+    (0, 0.25, 1.2, 0.0),
     (0, 0.25, 1.1, 0.0),
-    (0, 0.25, 1.1, 0.0),
-    (0, 0.25, 1.1, 0.0),
+    (0, 0.25, 1.0, 0.0),
     (0, 0.25, 0.65, 0.0),
 ]
+
+# sequence = [
+#     (0, 0.25, 1.25, 0.0),
+#     (0, 0.25, 1.5, 0.0),
+#     (0, 0.25, 1.0, 0.0),
+#     (0, 0.25, 1.0, 180.0),
+#     (0, 0.25, 1.0, 0.0),
+#     (0, 0.25, 0.65, 0.0),
+# ]
 
 startup_thrust=15000
 hover_thrust = 40000
@@ -143,18 +152,40 @@ def wait_for_position_estimator(scf):
 def set_control_parameters(scf):
     print('Setting control parameters for Nimble Plus')
     
+    # # Single loop in-body control
+    # scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
+    # scf.cf.param.set_value('posCtlPid.thrustMin', '30000')
+    # scf.cf.param.set_value('posCtlPid.xKp', '32.0') #32
+    # scf.cf.param.set_value('posCtlPid.xKi', '2.0')
+    # scf.cf.param.set_value('posCtlPid.xKd', '8.0') #8
+    # scf.cf.param.set_value('posCtlPid.yKp', '25.0') #25
+    # scf.cf.param.set_value('posCtlPid.yKi', '2.0')
+    # scf.cf.param.set_value('posCtlPid.yKd', '10.0') #10
+    # scf.cf.param.set_value('posCtlPid.zKp', '62.5')
+    # scf.cf.param.set_value('posCtlPid.zKi', '6.0')
+    # scf.cf.param.set_value('posCtlPid.zKd', '12.6')
+    # scf.cf.param.set_value('posCtlPid.rpLimit', '20.0')
+    # scf.cf.param.set_value('pid_attitude.yaw_kp', '30.0') #30
+    # scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0') #1
+    # scf.cf.param.set_value('pid_rate.yaw_kp', '100.0') #100
+    # scf.cf.param.set_value('pid_attitude.roll_kp', '15.0') #15
+    # scf.cf.param.set_value('pid_attitude.roll_kd', '1.0') #1
+    # scf.cf.param.set_value('pid_rate.roll_kp', '50.0') #50
+
+    # Double loop in-body control
     scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
     scf.cf.param.set_value('posCtlPid.thrustMin', '30000')
-    scf.cf.param.set_value('posCtlPid.xKp', '32.0') #32
-    scf.cf.param.set_value('posCtlPid.xKi', '2.0')
-    scf.cf.param.set_value('posCtlPid.xKd', '8.0') #8
-    scf.cf.param.set_value('posCtlPid.yKp', '25.0') #25
-    scf.cf.param.set_value('posCtlPid.yKi', '2.0')
-    scf.cf.param.set_value('posCtlPid.yKd', '10.0') #10
-    scf.cf.param.set_value('posCtlPid.zKp', '62.5')
-    scf.cf.param.set_value('posCtlPid.zKi', '6.0')
-    scf.cf.param.set_value('posCtlPid.zKd', '12.6')
-    scf.cf.param.set_value('posCtlPid.rpLimit', '20.0')
+    scf.cf.param.set_value('posCtlPid.xKp', '4.0')
+    scf.cf.param.set_value('posCtlPid.xKi', '0.25')
+    scf.cf.param.set_value('posCtlPid.xKd', '1.0')
+    scf.cf.param.set_value('posCtlPid.yKp', '2.5')
+    scf.cf.param.set_value('posCtlPid.yKi', '0.2')
+    scf.cf.param.set_value('posCtlPid.yKd', '1.0')
+    scf.cf.param.set_value('posCtlPid.zKp', '5.0')
+    scf.cf.param.set_value('posCtlPid.zKi', '0.5')
+    scf.cf.param.set_value('posCtlPid.zKd', '1.0')
+    scf.cf.param.set_value('posCtlPid.rLimit', '20.0')
+    scf.cf.param.set_value('posCtlPid.pLimit', '20.0')
     scf.cf.param.set_value('pid_attitude.yaw_kp', '30.0') #30
     scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0') #1
     scf.cf.param.set_value('pid_rate.yaw_kp', '100.0') #100
@@ -163,15 +194,15 @@ def set_control_parameters(scf):
     scf.cf.param.set_value('pid_rate.roll_kp', '50.0') #50
     # scf.cf.param.set_value('posCtlPid.xyVelMax', '1.0')
     # scf.cf.param.set_value('posCtlPid.zVelMax', '1.0')
-    # scf.cf.param.set_value('velCtlPid.vxKp', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vxKi', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vxKd', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vyKp', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vyKi', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vyKd', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vzKp', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vzKi', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
+    scf.cf.param.set_value('velCtlPid.vxKp', '8.0')
+    scf.cf.param.set_value('velCtlPid.vxKi', '0.0')
+    scf.cf.param.set_value('velCtlPid.vxKd', '0.0')
+    scf.cf.param.set_value('velCtlPid.vyKp', '10.0')
+    scf.cf.param.set_value('velCtlPid.vyKi', '0.0')
+    scf.cf.param.set_value('velCtlPid.vyKd', '0.0')
+    scf.cf.param.set_value('velCtlPid.vzKp', '12.5')
+    scf.cf.param.set_value('velCtlPid.vzKi', '0.0')
+    scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
 
     
 def set_initial_position(scf, x, y, z, yaw_deg):
