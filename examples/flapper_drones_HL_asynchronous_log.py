@@ -54,8 +54,8 @@ def key_capture_thread():
     input()
     kill_flight = True
 
-# drone = 'CF'
-drone = 'Flapper'
+drone = 'CF'
+# drone = 'Flapper'
 
 # Adress of the drone
 if (drone == 'Flapper'):
@@ -136,16 +136,16 @@ sequence = [
 ]
 
 # Setting for Nimble Flapper
-startup_thrust=15000
-hover_thrust = 40000
-takeoff_thrust = int(1.2*hover_thrust)
-landing_thrust = 32000
+# startup_thrust=15000
+# hover_thrust = 40000
+# takeoff_thrust = int(1.2*hover_thrust)
+# landing_thrust = 32000
 
 # Setting for CF2.1
-# startup_thrust=10000
-# hover_thrust = 35000
-# takeoff_thrust = int(1.2*hover_thrust)
-# landing_thrust = 20000
+startup_thrust=10000
+hover_thrust = 35000
+takeoff_thrust = int(1.2*hover_thrust)
+landing_thrust = 20000
 
 
 
