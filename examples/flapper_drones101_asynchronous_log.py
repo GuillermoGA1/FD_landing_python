@@ -56,11 +56,11 @@ def key_capture_thread():
 
 #drone = 'CF'
 drone = 'FlapperRoadrunner'
-drone = 'Flapper'
+#drone = 'Flapper'
 
 # Adress of the drone
 if (drone == 'Flapper'):
-    address = 'E7E7E7E7E7' # NimbleFlapper 2.0 Bolt
+    address = 'E7E7E7E7E1' # NimbleFlapper 2.0 Bolt
 elif (drone == 'FlapperRoadrunner'):
     address = 'E7E7E7E7E0' # NimbleFlapper 2.0 Roadrunner
 elif (drone == 'CF'):
@@ -71,38 +71,40 @@ else:
 # URI to the drone to connect to
 uri = 'radio://0/80/2M/' + address
 
+origin = [1.75, 2.25, 0]
+
 # Change the sequence according to your setup
 #             x    y    z   yaw[deg]
 sequence = [
-    (0, 0.25, 1.25, 0.0),
-    (0, 0.25, 1.75, 0.0),
-    (0, 0.25, 1.75, 0.0),
-    (-0.5, 0.25, 1.75, 0.0),
-    (-0.5, 0.25, 1.75, 0.0),
-    (-0.5, 0.25, 1.75, 0.0),
-    (0.5, 0.25, 1.75, 0.0),
-    (0.5, 0.25, 1.75, 0.0),
-    (0.5, 0.25, 1.75, 0.0),
-    (0, 0.25, 1.75, 0.0),
-    (0, 0.25, 1.75, 0.0),
-    (0, 0.25, 1.75, 0.0),
-    (0, 1.25, 1.75, 0.0),
-    (0, 1.25, 1.75, 0.0),
-    (0, 1.25, 1.75, 0.0),
-    (0, 0.25, 1.75, 0.0),
-    (0, 0.25, 1.75, 0.0),
-    (0, 0.25, 1.75, 0.0),
-    (0, 0.25, 1.75, 90.0),
-    (0, 0.25, 1.75, 90.0),
-    (0, 0.25, 1.75, 180.0),
-    (0, 0.25, 1.75, 180.0),
-    (0, 0.25, 1.75, 270.0),
-    (0, 0.25, 1.75, 270.0),
-    (0, 0.25, 1.75, 0.0),
-    (0, 0.25, 1.3, 0.0),
-    (0, 0.25, 1.0, 0.0),
-    (0, 0.25, 0.7, 0.0),
-    (0, 0.25, 0.5, 0.0),
+    (0, 0.0, 1.25, 0.0),
+    (0, 0.0, 1.5, 0.0),
+    (0, 0.0, 1.5, 0.0),
+    (-0.5, 0.0, 1.5, 0.0),
+    (-0.5, 0.0, 1.5, 0.0),
+    (-0.5, 0.0, 1.5, 0.0),
+    (0.5, 0.0, 1.5, 0.0),
+    (0.5, 0.0, 1.5, 0.0),
+    (0.5, 0.0, 1.5, 0.0),
+    (0, 0.0, 1.5, 0.0),
+    (0, 0.0, 1.5, 0.0),
+    (0, 0.0, 1.5, 0.0),
+    (0, 1.0, 1.5, 0.0),
+    (0, 1.0, 1.5, 0.0),
+    (0, 1.0, 1.5, 0.0),
+    (0, 0.0, 1.5, 0.0),
+    (0, 0.0, 1.5, 0.0),
+    (0, 0.0, 1.5, 0.0),
+    (0, 0.0, 1.5, 90.0),
+    (0, 0.0, 1.5, 90.0),
+    (0, 0.0, 1.5, 180.0),
+    (0, 0.0, 1.5, 180.0),
+    (0, 0.0, 1.5, 270.0),
+    (0, 0.0, 1.5, 270.0),
+    (0, 0.0, 1.5, 0.0),
+    (0, 0.0, 1.2, 0.0),
+    (0, 0.0, 0.9, 0.0),
+    (0, 0.0, 0.65, 0.0),
+    (0, 0.0, 0.4, 0.0),
 ]
 
 # sequence = [
@@ -127,7 +129,7 @@ sequence = [
 
 # Setting for Nimble Flapper
 startup_thrust=15000
-hover_thrust = 40000
+hover_thrust = 38000
 takeoff_thrust = int(1.2*hover_thrust)
 landing_thrust = 32000
 
@@ -183,30 +185,42 @@ def wait_for_position_estimator(scf):
 def set_control_parameters_Roadrunner(scf):
     print('Setting control parameters for Nimble Flapper Roadrunner')
 
+    scf.cf.param.set_value('attFilt.rateFiltEn', '1') #1
+    scf.cf.param.set_value('attFilt.omxFiltCut', '12.5') #12.5
+    scf.cf.param.set_value('attFilt.omyFiltCut', '12.5') #12.5
+    scf.cf.param.set_value('attFilt.omzFiltCut', '5.0') #5.0
+    
+    scf.cf.param.set_value('attFilt.attFiltEn', '0') #0
+    scf.cf.param.set_value('attFilt.attFiltCut', '15.0') #15.0
+    
     # scf.cf.param.set_value('pid_attitude.roll_kp', '15.0') #15
     # scf.cf.param.set_value('pid_attitude.roll_kd', '1.0') #1
     # scf.cf.param.set_value('pid_rate.roll_kp', '50.0') #50
-    # scf.cf.param.set_value('pid_attitude.yaw_kp', '30.0')
-    # scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0')
-    # scf.cf.param.set_value('pid_rate.yaw_kp', '100.0')
-    
-    # # Single loop in-body control
-    # scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    # scf.cf.param.set_value('posCtlPid.thrustMin', '30000')
-    # scf.cf.param.set_value('posCtlPid.xKp', '32.0') #32
-    # scf.cf.param.set_value('posCtlPid.xKi', '2.0')
-    # scf.cf.param.set_value('posCtlPid.xKd', '8.0') #8
-    # scf.cf.param.set_value('posCtlPid.yKp', '25.0') #25
-    # scf.cf.param.set_value('posCtlPid.yKi', '2.0')
-    # scf.cf.param.set_value('posCtlPid.yKd', '10.0') #10
-    # scf.cf.param.set_value('posCtlPid.zKp', '62.5')
-    # scf.cf.param.set_value('posCtlPid.zKi', '6.0')
-    # scf.cf.param.set_value('posCtlPid.zKd', '12.6')
-    # scf.cf.param.set_value('posCtlPid.rpLimit', '20.0')
+    # scf.cf.param.set_value('pid_attitude.pitch_kp', '13.0') #13
+    # scf.cf.param.set_value('pid_attitude.pitch_kd', '1.0') #1
+    # scf.cf.param.set_value('pid_rate.pitch_kp', '70.0') #70
     # scf.cf.param.set_value('pid_attitude.yaw_kp', '30.0') #30
     # scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0') #1
     # scf.cf.param.set_value('pid_rate.yaw_kp', '100.0') #100
+    # scf.cf.param.set_value('pid_attitude.yawFeedForw', '220.0') #220.0
     
+    # # Single loop in-body control
+    scf.cf.param.set_value('posCtlPid.singleLoop', '1')
+    scf.cf.param.set_value('posVelFilt.posFiltEn', '1')
+    scf.cf.param.set_value('posVelFilt.posFiltCut', '7.0')
+    scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
+    scf.cf.param.set_value('posCtlPid.thrustMin', '30000')
+    scf.cf.param.set_value('posCtlPid.xKp', '32.0') #32
+    scf.cf.param.set_value('posCtlPid.xKi', '2.0')
+    scf.cf.param.set_value('posCtlPid.xKd', '8.0') #8
+    scf.cf.param.set_value('posCtlPid.yKp', '25.0') #25
+    scf.cf.param.set_value('posCtlPid.yKi', '2.0')
+    scf.cf.param.set_value('posCtlPid.yKd', '10.0') #10
+    scf.cf.param.set_value('posCtlPid.zKp', '62.5')
+    scf.cf.param.set_value('posCtlPid.zKi', '6.0')
+    scf.cf.param.set_value('posCtlPid.zKd', '12.6')
+    scf.cf.param.set_value('posCtlPid.rpLimit', '20.0')
+
     # Double loop in-body control - initial parameters
     # scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
     # scf.cf.param.set_value('posCtlPid.thrustMin', '30000')
@@ -234,32 +248,37 @@ def set_control_parameters_Roadrunner(scf):
     # scf.cf.param.set_value('posCtlPid.yBodyVelMax', '3.0')
     # scf.cf.param.set_value('posCtlPid.zVelMax', '3.0')
 
-    # Double loop in-body control
-    scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    scf.cf.param.set_value('posCtlPid.thrustMin', '30000')
-    scf.cf.param.set_value('posCtlPid.xKp', '4.0')
-    scf.cf.param.set_value('posCtlPid.xKi', '0.0')
-    scf.cf.param.set_value('posCtlPid.xKd', '0.0')
-    scf.cf.param.set_value('posCtlPid.yKp', '2.5')
-    scf.cf.param.set_value('posCtlPid.yKi', '0.0')
-    scf.cf.param.set_value('posCtlPid.yKd', '0.0')
-    scf.cf.param.set_value('posCtlPid.zKp', '5.0')
-    scf.cf.param.set_value('posCtlPid.zKi', '0.5')
-    scf.cf.param.set_value('posCtlPid.zKd', '0.0')
-    scf.cf.param.set_value('posCtlPid.rLimit', '25.0')
-    scf.cf.param.set_value('posCtlPid.pLimit', '25.0')
-    scf.cf.param.set_value('velCtlPid.vxKp', '8.0')
-    scf.cf.param.set_value('velCtlPid.vxKi', '0.5')
-    scf.cf.param.set_value('velCtlPid.vxKd', '0.0')
-    scf.cf.param.set_value('velCtlPid.vyKp', '12.0')
-    scf.cf.param.set_value('velCtlPid.vyKi', '0.5')
-    scf.cf.param.set_value('velCtlPid.vyKd', '0.0')
-    scf.cf.param.set_value('velCtlPid.vzKp', '12.5')
-    scf.cf.param.set_value('velCtlPid.vzKi', '5.0')
-    scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
-    scf.cf.param.set_value('posCtlPid.xBodyVelMax', '3.0')
-    scf.cf.param.set_value('posCtlPid.yBodyVelMax', '3.0')
-    scf.cf.param.set_value('posCtlPid.zVelMax', '3.0')
+    # # Double loop in-body control
+    # scf.cf.param.set_value('posCtlPid.singleLoop', '0')
+    # scf.cf.param.set_value('posVelFilt.posFiltEn', '0')
+    # scf.cf.param.set_value('posVelFilt.posFiltCut', '5.0')
+    # scf.cf.param.set_value('posVelFilt.velFiltEn', '1')
+    # scf.cf.param.set_value('posVelFilt.velFiltCut', '5.0')
+    # scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
+    # scf.cf.param.set_value('posCtlPid.thrustMin', '30000')
+    # scf.cf.param.set_value('posCtlPid.xKp', '4.0')
+    # scf.cf.param.set_value('posCtlPid.xKi', '0.0')
+    # scf.cf.param.set_value('posCtlPid.xKd', '0.0')
+    # scf.cf.param.set_value('posCtlPid.yKp', '2.5')
+    # scf.cf.param.set_value('posCtlPid.yKi', '0.0')
+    # scf.cf.param.set_value('posCtlPid.yKd', '0.0')
+    # scf.cf.param.set_value('posCtlPid.zKp', '5.0')
+    # scf.cf.param.set_value('posCtlPid.zKi', '0.5')
+    # scf.cf.param.set_value('posCtlPid.zKd', '0.0')
+    # scf.cf.param.set_value('posCtlPid.rLimit', '25.0')
+    # scf.cf.param.set_value('posCtlPid.pLimit', '25.0')
+    # scf.cf.param.set_value('velCtlPid.vxKp', '4.0')
+    # scf.cf.param.set_value('velCtlPid.vxKi', '0.5')
+    # scf.cf.param.set_value('velCtlPid.vxKd', '0.0')
+    # scf.cf.param.set_value('velCtlPid.vyKp', '10.0')
+    # scf.cf.param.set_value('velCtlPid.vyKi', '0.5')
+    # scf.cf.param.set_value('velCtlPid.vyKd', '0.0')
+    # scf.cf.param.set_value('velCtlPid.vzKp', '12.5')
+    # scf.cf.param.set_value('velCtlPid.vzKi', '5.0')
+    # scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
+    # scf.cf.param.set_value('posCtlPid.xBodyVelMax', '3.0')
+    # scf.cf.param.set_value('posCtlPid.yBodyVelMax', '3.0')
+    # scf.cf.param.set_value('posCtlPid.zVelMax', '3.0')
 
 def set_control_parameters_Bolt(scf):
     print('Setting control parameters for Nimble Flapper Bolt')
@@ -321,6 +340,13 @@ def reset_estimator(scf):
 
     wait_for_position_estimator(cf)
 
+def reinitialize_controller(scf):
+    cf = scf.cf
+    cf.param.set_value('stabilizer.controller', '0') # switch to ANY
+    time.sleep(0.1)
+    cf.param.set_value('stabilizer.controller', '1') # switch to PID
+    time.sleep(0.1)
+
 def log_async_setup(scf, logconf):
     cf = scf.cf
     cf.log.add_config(logconf)
@@ -349,13 +375,15 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, f):
     # - check for vbat and if too low land - implement as an exception callback?
 
     # unlock the engines
-    cf.commander.send_setpoint(0.0, 0.0, 0, 0)
+    cf.commander.send_setpoint(base_x, base_y, base_z, 0)
 
     # start listening to Enter key
     th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
     
+    print('Positions set relative to the origin {}'.format(origin), file=f)
     print('Starting engines (press enter to kill)')
 
+    
     time0 = time.time()
     while (time.time()-time0) < 0.5:
         if kill_flight:
@@ -363,7 +391,7 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, f):
             print('Drone killed')
             break
         
-        cf.commander.send_setpoint(0.0, 0.0, 0, startup_thrust)
+        cf.commander.send_setpoint(base_x, base_y, base_z, startup_thrust)
         time.sleep(0.1)
     
     print('Taking off (press enter to kill)')
@@ -374,12 +402,11 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, f):
             print('Drone killed')
             break
         
-        cf.commander.send_setpoint(0.0, 0.0, 0, takeoff_thrust)
+        cf.commander.send_setpoint(base_x, base_y, base_z, takeoff_thrust)
         time.sleep(0.1)
         
 
     for position in sequence:
-        
         print('Setting position {}'.format(position), file=f)
         print('Setting position {}'.format(position))
         print('Battery voltage is {}' .format(vbat))
@@ -392,9 +419,9 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, f):
         time0 = time.time()
         while (time.time()-time0) < 3.0:
             if kill_flight:
-                cf.commander.send_setpoint(0.0, 0.0, 0.0, landing_thrust)
+                cf.commander.send_setpoint(base_x, base_y, base_z, landing_thrust)
                 print('Drone forced to land')
-                time.sleep(2.5)
+                time.sleep(2.0)
                 cf.commander.send_stop_setpoint()
                 print('Drone killed')
                 return
@@ -413,9 +440,9 @@ if __name__ == '__main__':
 
     # Set these to the position and yaw based on how your Crazyflie is placed
     # on the floor
-    initial_x = 0.0
-    initial_y = 0.0
-    initial_z = 0.0
+    initial_x = origin[0]
+    initial_y = origin[1]
+    initial_z = origin[2]
     initial_yaw = 0  # In degrees
     # 0: positive X direction
     # 90: positive Y direction
@@ -459,12 +486,15 @@ if __name__ == '__main__':
             time.sleep(1)
             print('Battery voltage is {}' .format(vbat))
             
+            reinitialize_controller(scf) # to load all new control parameters
             reset_tumble_detector(scf)
+            
             if (drone == 'Flapper'):
                 set_control_parameters_Bolt(scf)
             elif (drone == 'FlapperRoadrunner'):
                 set_control_parameters_Roadrunner(scf)
             set_initial_position(scf, initial_x, initial_y, initial_z, initial_yaw)
+            
             reset_estimator(scf)
             
             log_state.start()
