@@ -375,7 +375,7 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, f):
     # - check for vbat and if too low land - implement as an exception callback?
 
     # unlock the engines
-    cf.commander.send_setpoint(base_x, base_y, base_z, 0)
+    cf.commander.send_setpoint(0, 0, 0, 0)
 
     # start listening to Enter key
     th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
@@ -391,7 +391,7 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, f):
             print('Drone killed')
             break
         
-        cf.commander.send_setpoint(base_x, base_y, base_z, startup_thrust)
+        cf.commander.send_setpoint(0, 0, 0, startup_thrust)
         time.sleep(0.1)
     
     print('Taking off (press enter to kill)')
@@ -402,7 +402,7 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, f):
             print('Drone killed')
             break
         
-        cf.commander.send_setpoint(base_x, base_y, base_z, takeoff_thrust)
+        cf.commander.send_setpoint(0, 0, 0, takeoff_thrust)
         time.sleep(0.1)
         
 
@@ -419,7 +419,7 @@ def run_sequence(scf, sequence, base_x, base_y, base_z, f):
         time0 = time.time()
         while (time.time()-time0) < 3.0:
             if kill_flight:
-                cf.commander.send_setpoint(base_x, base_y, base_z, landing_thrust)
+                cf.commander.send_setpoint(0, 0, 0, landing_thrust)
                 print('Drone forced to land')
                 time.sleep(2.0)
                 cf.commander.send_stop_setpoint()

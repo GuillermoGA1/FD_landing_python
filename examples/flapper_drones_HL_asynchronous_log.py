@@ -54,7 +54,7 @@ def key_capture_thread():
     input()
     kill_flight = True
 
-# drone = 'CF'
+drone = 'CF'
 drone = 'FlapperRoadrunner'
 # drone = 'Flapper'
 
@@ -73,87 +73,14 @@ uri = 'radio://0/80/2M/' + address
 
 origin = [1.75, 2.25, 0]
 
-# Change the sequence according to your setup
-#             x    y    z   yaw[deg]
-# sequence = [
-#     (0, 0.25, 1.25, 0.0),
-#     (0, 0.25, 1.75, 0.0),
-#     (0, 0.25, 1.75, 0.0),
-#     (-0.5, 0.25, 1.75, 0.0),
-#     (-0.5, 0.25, 1.75, 0.0),
-#     (-0.5, 0.25, 1.75, 0.0),
-#     (0.5, 0.25, 1.75, 0.0),
-#     (0.5, 0.25, 1.75, 0.0),
-#     (0.5, 0.25, 1.75, 0.0),
-#     (0, 0.25, 1.75, 0.0),
-#     (0, 0.25, 1.75, 0.0),
-#     (0, 0.25, 1.75, 0.0),
-#     (0, 1.25, 1.75, 0.0),
-#     (0, 1.25, 1.75, 0.0),
-#     (0, 1.25, 1.75, 0.0),
-#     (0, 0.25, 1.75, 0.0),
-#     (0, 0.25, 1.75, 0.0),
-#     (0, 0.25, 1.75, 0.0),
-#     (0, 0.25, 1.75, 90.0),
-#     (0, 0.25, 1.75, 90.0),
-#     (0, 0.25, 1.75, 180.0),
-#     (0, 0.25, 1.75, 180.0),
-#     (0, 0.25, 1.75, 270.0),
-#     (0, 0.25, 1.75, 270.0),
-#     (0, 0.25, 1.75, 0.0),
-#     (0, 0.25, 1.3, 0.0),
-#     (0, 0.25, 1.2, 0.0),
-#     (0, 0.25, 1.1, 0.0),
-#     (0, 0.25, 1.0, 0.0),
-#     (0, 0.25, 0.65, 0.0),
-# ]
-
-# sequence = [
-#     (0, 0.25, 1.25, 0.0),
-#     (0, 0.25, 1.5, 0.0),
-#     (0, 0.25, 1.0, 0.0),
-#     (0, 0.25, 1.0, 180.0),
-#     (0, 0.25, 1.0, 0.0),
-#     (0, 0.25, 0.65, 0.0),
-# ]
-
-sequence = [
-    (0, 0.25, 1.25, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.5, 0.0),
-    (0, 0.25, 1.0, 0.0),
-    (0, 0.25, 0.65, 0.0),
-]
-
 if (drone == 'Flapper') or (drone == 'FlapperRoadrunner'):
     # Setting for Nimble Flapper
-    startup_thrust=15000
     hover_thrust = 38000
-    takeoff_thrust = int(1.2*hover_thrust)
-    landing_thrust = 32000
-
+    
 elif (drone == 'CF'):
     # Setting for CF2.1
-    startup_thrust=10000
     hover_thrust = 35000
-    takeoff_thrust = int(1.2*hover_thrust)
-    landing_thrust = 20000
-
+    
 
 
 def wait_for_position_estimator(scf):
@@ -224,7 +151,7 @@ def set_control_parameters_Roadrunner(scf):
     # scf.cf.param.set_value('posVelFilt.posFiltEn', '1')
     # scf.cf.param.set_value('posVelFilt.posFiltCut', '7.0')
     # scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    # scf.cf.param.set_value('posCtlPid.thrustMin', '30000')
+    # scf.cf.param.set_value('posCtlPid.thrustMin', '20000')
     # scf.cf.param.set_value('posCtlPid.xKp', '32.0') #32
     # scf.cf.param.set_value('posCtlPid.xKi', '2.0')
     # scf.cf.param.set_value('posCtlPid.xKd', '8.0') #8
@@ -238,7 +165,7 @@ def set_control_parameters_Roadrunner(scf):
 
     # Double loop in-body control - initial parameters
     # scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    # scf.cf.param.set_value('posCtlPid.thrustMin', '30000')
+    # scf.cf.param.set_value('posCtlPid.thrustMin', '20000')
     # scf.cf.param.set_value('posCtlPid.xKp', '4.0')
     # scf.cf.param.set_value('posCtlPid.xKi', '0.25')
     # scf.cf.param.set_value('posCtlPid.xKd', '1.0')
@@ -268,13 +195,13 @@ def set_control_parameters_Roadrunner(scf):
     scf.cf.param.set_value('posVelFilt.posFiltEn', '0')
     scf.cf.param.set_value('posVelFilt.posFiltCut', '5.0')
     scf.cf.param.set_value('posVelFilt.velFiltEn', '1')
-    scf.cf.param.set_value('posVelFilt.velFiltCut', '7.0')
+    scf.cf.param.set_value('posVelFilt.velFiltCut', '10.0')
     scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    scf.cf.param.set_value('posCtlPid.thrustMin', '30000')
-    scf.cf.param.set_value('posCtlPid.xKp', '4.0')
+    scf.cf.param.set_value('posCtlPid.thrustMin', '20000')
+    scf.cf.param.set_value('posCtlPid.xKp', '6.0')
     scf.cf.param.set_value('posCtlPid.xKi', '0.0')
     scf.cf.param.set_value('posCtlPid.xKd', '0.0')
-    scf.cf.param.set_value('posCtlPid.yKp', '2.5')
+    scf.cf.param.set_value('posCtlPid.yKp', '3.5')
     scf.cf.param.set_value('posCtlPid.yKi', '0.0')
     scf.cf.param.set_value('posCtlPid.yKd', '0.0')
     scf.cf.param.set_value('posCtlPid.zKp', '5.0')
@@ -282,7 +209,7 @@ def set_control_parameters_Roadrunner(scf):
     scf.cf.param.set_value('posCtlPid.zKd', '0.0')
     scf.cf.param.set_value('posCtlPid.rLimit', '25.0')
     scf.cf.param.set_value('posCtlPid.pLimit', '25.0')
-    scf.cf.param.set_value('velCtlPid.vxKp', '4.0')
+    scf.cf.param.set_value('velCtlPid.vxKp', '6.0')
     scf.cf.param.set_value('velCtlPid.vxKi', '0.5')
     scf.cf.param.set_value('velCtlPid.vxKd', '0.0')
     scf.cf.param.set_value('velCtlPid.vyKp', '10.0')
@@ -307,7 +234,7 @@ def set_control_parameters_Bolt(scf):
     
     # Double loop in-body control
     scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    scf.cf.param.set_value('posCtlPid.thrustMin', '30000')
+    scf.cf.param.set_value('posCtlPid.thrustMin', '20000')
     scf.cf.param.set_value('posCtlPid.xKp', '4.0')
     scf.cf.param.set_value('posCtlPid.xKi', '0.0')
     scf.cf.param.set_value('posCtlPid.xKd', '0.0')
@@ -330,6 +257,12 @@ def set_control_parameters_Bolt(scf):
     scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
     scf.cf.param.set_value('posCtlPid.xBodyVelMax', '3.0')
     scf.cf.param.set_value('posCtlPid.yBodyVelMax', '3.0')
+    scf.cf.param.set_value('posCtlPid.zVelMax', '3.0')
+
+def set_control_parameters_CF(scf):
+    print('Setting control parameters for Crazyflie')
+    scf.cf.param.set_value('posCtlPid.rpLimit', '30.0')
+    scf.cf.param.set_value('posCtlPid.xyVelMax', '3.0')
     scf.cf.param.set_value('posCtlPid.zVelMax', '3.0')
         
 def set_initial_position(scf, x, y, z, yaw_deg):
@@ -382,72 +315,6 @@ def log_and_print_async_callback(timestamp, data, logconf):
     print('[%d]: %s' % (timestamp, data), file=f)
     print('[%d]: %s' % (timestamp, data))
 
-def run_sequence(scf, sequence, base_x, base_y, base_z, f):
-    cf = scf.cf
-    
-    ## TODO 
-    # - rewrite as a state-machine
-    # - check for vbat and if too low land - implement as an exception callback?
-
-    # unlock the engines
-    cf.commander.send_setpoint(0.0, 0.0, 0, 0)
-
-    # start listening to Enter key
-    th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
-    
-    print('Starting engines (press enter to kill)')
-
-    time0 = time.time()
-    while (time.time()-time0) < 0.5:
-        if kill_flight:
-            cf.commander.send_stop_setpoint()
-            print('Drone killed')
-            break
-        
-        cf.commander.send_setpoint(0.0, 0.0, 0, startup_thrust)
-        time.sleep(0.1)
-    
-    print('Taking off (press enter to kill)')
-    time0 = time.time()
-    while (time.time()-time0) < 0.5:
-        if kill_flight:
-            cf.commander.send_stop_setpoint()
-            print('Drone killed')
-            break
-        
-        cf.commander.send_setpoint(0.0, 0.0, 0, takeoff_thrust)
-        time.sleep(0.1)
-        
-
-    for position in sequence:
-        
-        print('Setting position {}'.format(position), file=f)
-        print('Setting position {}'.format(position))
-        print('Battery voltage is {}' .format(vbat))
-
-        x = position[0] + base_x
-        y = position[1] + base_y
-        z = position[2] + base_z
-        yaw = position[3]
-
-        time0 = time.time()
-        while (time.time()-time0) < 3.0:
-            if kill_flight:
-                cf.commander.send_setpoint(0.0, 0.0, 0.0, landing_thrust)
-                print('Drone forced to land')
-                time.sleep(2.5)
-                cf.commander.send_stop_setpoint()
-                print('Drone killed')
-                return
-
-            cf.commander.send_position_setpoint(x, y, z, yaw)
-            time.sleep(0.1)
-
-    cf.commander.send_stop_setpoint()
-    # Make sure that the last packet leaves before the link is closed
-    # since the message queue is not flushed before closing
-    time.sleep(0.1)
-
 def activate_high_level_commander(cf):
     cf.param.set_value('commander.enHighLevel', '1')
 
@@ -489,6 +356,27 @@ if __name__ == '__main__':
     log_cmd.add_variable('controller.cmd_pitch', 'float')
     log_cmd.add_variable('controller.cmd_yaw', 'float')
     
+    log_range1 = LogConfig(name='ranging', period_in_ms=50)
+    log_range1.add_variable('ranging.distance0', 'float')
+    log_range1.add_variable('ranging.distance1', 'float')
+    log_range1.add_variable('ranging.distance2', 'float')
+    log_range1.add_variable('ranging.distance3', 'float')
+    
+    log_range2 = LogConfig(name='ranging', period_in_ms=50)
+    log_range2.add_variable('ranging.distance4', 'float')
+    log_range2.add_variable('ranging.distance5', 'float')
+    log_range2.add_variable('ranging.distance6', 'float')
+    log_range2.add_variable('ranging.distance7', 'float')
+
+    log_pos_control = LogConfig(name='posCtl', period_in_ms=50)
+    log_pos_control.add_variable('posCtl.targetX', 'float')
+    log_pos_control.add_variable('posCtl.targetY', 'float')
+    log_pos_control.add_variable('posCtl.targetZ', 'float')
+    log_pos_control.add_variable('posCtl.targetVX', 'float')
+    log_pos_control.add_variable('posCtl.targetVY', 'float')
+    log_pos_control.add_variable('posCtl.targetVZ', 'float')
+    
+
     with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
         with open('/home/matej/bitcraze/FlightLogs/flight_log_' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.txt', 'w') as f:
             print('Flight log' + datetime.now().strftime("%Y%m%d %H%M%S"), file=f)
@@ -496,6 +384,9 @@ if __name__ == '__main__':
             log_async_setup(scf, log_state)
             log_async_setup(scf, log_set)
             log_async_setup(scf, log_cmd)
+            log_async_setup(scf, log_range1)
+            log_async_setup(scf, log_range2)
+            log_async_setup(scf, log_pos_control)
             log_async_setup(scf, log_vbat)
 
             log_vbat.start()
@@ -511,8 +402,10 @@ if __name__ == '__main__':
                 set_control_parameters_Bolt(scf)
             elif (drone == 'FlapperRoadrunner'):
                 set_control_parameters_Roadrunner(scf)
+            elif (drone == 'CF'):
+                set_control_parameters_CF(scf)
             
-            #reinitialize_controller(scf) # to load all new control parameters
+            # reinitialize_controller(scf) # to load all new control parameters
             
             set_initial_position(scf, initial_x, initial_y, initial_z, initial_yaw)
             reset_estimator(scf)
@@ -520,31 +413,36 @@ if __name__ == '__main__':
             log_state.start()
             log_set.start()
             log_cmd.start()
+            log_range1.start()
+            log_range2.start()
+            log_pos_control.start()
 
-            cf.commander.send_setpoint(0.0, 0.0, 0.0, 0)
+            # unlock the engines
+            # cf.commander.send_setpoint(0, 0, 0, 0)
             
-            # start listening to Enter key
-            th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
-    
-            print('Starting engines (press enter to kill)')
-
-            time0 = time.time()
-            while (time.time()-time0) < 1.0:
-                if kill_flight:
-                    cf.commander.send_stop_setpoint()
-                    print('Drone killed')
-                    break
-                    
-                cf.commander.send_setpoint(0.0, 0.0, 0, startup_thrust)
-                time.sleep(0.1)
-
             activate_high_level_commander(cf)
             time.sleep(0.2)
             commander = cf.high_level_commander
-            time.sleep(2.0)
-            commander.takeoff(1.0, 2.0)
+            
+            commander.takeoff(-0.5, 0.001) # setting the setpoint underground to spinup the motors before taking off
+            time.sleep(0.01)
+            commander.go_to(origin[0], origin[1], origin[2]-0.5, 0.0, 0.01) # (re)set the setpoint, sometimes xy stays at [0,0]
+            time.sleep(0.2)
+            commander.go_to(origin[0], origin[1], origin[2]+1.0, 0.0, 2)
             time.sleep(4.0)
             commander.go_to(origin[0], origin[1], origin[2]+1.5, 0.0, 2)
+            time.sleep(4.0)
+            commander.go_to(origin[0]+0.75, origin[1], origin[2]+1.5, 0.0, 1)
+            time.sleep(4.0)
+            commander.go_to(origin[0]-0.75, origin[1], origin[2]+1.5, 0.0, 1)
+            time.sleep(4.0)
+            commander.go_to(origin[0], origin[1], origin[2]+1.5, 0.0, 1)
+            time.sleep(4.0)
+            commander.go_to(origin[0], origin[1]-0.75, origin[2]+1.5, 0.0, 1)
+            time.sleep(4.0)
+            commander.go_to(origin[0], origin[1]+0.75, origin[2]+1.5, 0.0, 1)
+            time.sleep(4.0)
+            commander.go_to(origin[0], origin[1], origin[2]+1.5, 0.0, 1)
             time.sleep(4.0)
             commander.go_to(origin[0], origin[1], origin[2]+1.0, 0.0, 2)
             time.sleep(4.0)
@@ -556,4 +454,6 @@ if __name__ == '__main__':
             log_set.stop()
             log_cmd.stop()
             log_vbat.stop()
-            
+            log_range1.stop()
+            log_range2.stop()
+            log_pos_control.stop()
