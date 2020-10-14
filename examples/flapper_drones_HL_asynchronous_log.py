@@ -44,7 +44,6 @@ from cflib.crazyflie.log import LogConfig
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.crazyflie.syncLogger import SyncLogger
 from datetime import datetime
-import time
 
 import threading as th
 
@@ -55,8 +54,8 @@ def key_capture_thread():
     kill_flight = True
 
 drone = 'CF'
-drone = 'FlapperRoadrunner'
-# drone = 'Flapper'
+# drone = 'FlapperRoadrunner'
+drone = 'Flapper'
 
 # Adress of the drone
 if (drone == 'Flapper'):
@@ -228,13 +227,57 @@ def set_control_parameters_Bolt(scf):
     # scf.cf.param.set_value('pid_attitude.roll_kp', '15.0') #15
     # scf.cf.param.set_value('pid_attitude.roll_kd', '1.0') #1
     # scf.cf.param.set_value('pid_rate.roll_kp', '50.0') #50
-    scf.cf.param.set_value('pid_attitude.yaw_kp', '30.0')
-    scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0')
-    scf.cf.param.set_value('pid_rate.yaw_kp', '80.0')
+    # scf.cf.param.set_value('pid_attitude.yaw_kp', '30.0')
+    # scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0')
+    # scf.cf.param.set_value('pid_rate.yaw_kp', '80.0')
     
-    # Double loop in-body control
+    # # Double loop in-body control
+    # scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
+    # scf.cf.param.set_value('posCtlPid.thrustMin', '20000')
+    # scf.cf.param.set_value('posCtlPid.xKp', '4.0')
+    # scf.cf.param.set_value('posCtlPid.xKi', '0.0')
+    # scf.cf.param.set_value('posCtlPid.xKd', '0.0')
+    # scf.cf.param.set_value('posCtlPid.yKp', '2.5')
+    # scf.cf.param.set_value('posCtlPid.yKi', '0.0')
+    # scf.cf.param.set_value('posCtlPid.yKd', '0.0')
+    # scf.cf.param.set_value('posCtlPid.zKp', '5.0')
+    # scf.cf.param.set_value('posCtlPid.zKi', '0.5')
+    # scf.cf.param.set_value('posCtlPid.zKd', '0.0')
+    # scf.cf.param.set_value('posCtlPid.rLimit', '25.0')
+    # scf.cf.param.set_value('posCtlPid.pLimit', '25.0')
+    # scf.cf.param.set_value('velCtlPid.vxKp', '4.0')
+    # scf.cf.param.set_value('velCtlPid.vxKi', '0.5')
+    # scf.cf.param.set_value('velCtlPid.vxKd', '0.0')
+    # scf.cf.param.set_value('velCtlPid.vyKp', '10.0')
+    # scf.cf.param.set_value('velCtlPid.vyKi', '0.5')
+    # scf.cf.param.set_value('velCtlPid.vyKd', '0.0')
+    # scf.cf.param.set_value('velCtlPid.vzKp', '12.5')
+    # scf.cf.param.set_value('velCtlPid.vzKi', '5.0')
+    # scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
+    # scf.cf.param.set_value('posCtlPid.xBodyVelMax', '3.0')
+    # scf.cf.param.set_value('posCtlPid.yBodyVelMax', '3.0')
+    # scf.cf.param.set_value('posCtlPid.zVelMax', '3.0')
+
+    scf.cf.param.set_value('attFilt.rateFiltEn', '1') #1    
+    scf.cf.param.set_value('attFilt.omxFiltCut', '15') #12.5
+    scf.cf.param.set_value('attFilt.omyFiltCut', '25') #12.5
+    scf.cf.param.set_value('attFilt.omzFiltCut', '5.0') #5.0
+    
+    scf.cf.param.set_value('attFilt.attFiltEn', '0') #0
+    scf.cf.param.set_value('attFilt.attFiltCut', '15.0') #15.0
+    
+    # # Double loop in-body control
+    scf.cf.param.set_value('posCtlPid.singleLoop', '0')
+    scf.cf.param.set_value('posVelFilt.posFiltEn', '0')
+    scf.cf.param.set_value('posVelFilt.posFiltCut', '5.0')
+    scf.cf.param.set_value('posVelFilt.velFiltEn', '0')
+    scf.cf.param.set_value('posVelFilt.velFiltCut', '10.0')
+    scf.cf.param.set_value('posVelFilt.posZFiltEn', '0')
+    scf.cf.param.set_value('posVelFilt.posZFiltCut', '5.0')
+    scf.cf.param.set_value('posVelFilt.velZFiltEn', '1')
+    scf.cf.param.set_value('posVelFilt.velZFiltCut', '10.0')
     scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    scf.cf.param.set_value('posCtlPid.thrustMin', '20000')
+    scf.cf.param.set_value('posCtlPid.thrustMin', '15000')
     scf.cf.param.set_value('posCtlPid.xKp', '4.0')
     scf.cf.param.set_value('posCtlPid.xKi', '0.0')
     scf.cf.param.set_value('posCtlPid.xKd', '0.0')
@@ -246,9 +289,11 @@ def set_control_parameters_Bolt(scf):
     scf.cf.param.set_value('posCtlPid.zKd', '0.0')
     scf.cf.param.set_value('posCtlPid.rLimit', '25.0')
     scf.cf.param.set_value('posCtlPid.pLimit', '25.0')
+    scf.cf.param.set_value('velCtlPid.vxKFF', '0.0')
     scf.cf.param.set_value('velCtlPid.vxKp', '4.0')
     scf.cf.param.set_value('velCtlPid.vxKi', '0.5')
     scf.cf.param.set_value('velCtlPid.vxKd', '0.0')
+    scf.cf.param.set_value('velCtlPid.vyKFF', '0.0')
     scf.cf.param.set_value('velCtlPid.vyKp', '10.0')
     scf.cf.param.set_value('velCtlPid.vyKi', '0.5')
     scf.cf.param.set_value('velCtlPid.vyKd', '0.0')
@@ -428,25 +473,23 @@ if __name__ == '__main__':
             time.sleep(0.01)
             commander.go_to(origin[0], origin[1], origin[2]-0.5, 0.0, 0.01) # (re)set the setpoint, sometimes xy stays at [0,0]
             time.sleep(0.2)
-            commander.go_to(origin[0], origin[1], origin[2]+1.0, 0.0, 2)
+            commander.go_to(origin[0], origin[1], origin[2]+1.25, 0.0, 4)
             time.sleep(4.0)
-            commander.go_to(origin[0], origin[1], origin[2]+1.5, 0.0, 2)
+            commander.go_to(origin[0], origin[1], origin[2]+1.25, 0.0, 2)
             time.sleep(4.0)
-            commander.go_to(origin[0]+0.75, origin[1], origin[2]+1.5, 0.0, 1)
+            # commander.go_to(origin[0]+0.75, origin[1], origin[2]+1.5, 0.0, 1)
+            # time.sleep(4.0)
+            # commander.go_to(origin[0]-0.75, origin[1], origin[2]+1.5, 0.0, 1)
+            # time.sleep(4.0)
+            # commander.go_to(origin[0], origin[1], origin[2]+1.5, 0.0, 1)
+            # time.sleep(4.0)
+            # commander.go_to(origin[0], origin[1]-0.75, origin[2]+1.5, 0.0, 1)
+            # time.sleep(4.0)
+            # commander.go_to(origin[0], origin[1]+0.75, origin[2]+1.5, 0.0, 1)
+            # time.sleep(4.0)
+            commander.go_to(origin[0], origin[1], origin[2]+1.25, 0.0, 1)
             time.sleep(4.0)
-            commander.go_to(origin[0]-0.75, origin[1], origin[2]+1.5, 0.0, 1)
-            time.sleep(4.0)
-            commander.go_to(origin[0], origin[1], origin[2]+1.5, 0.0, 1)
-            time.sleep(4.0)
-            commander.go_to(origin[0], origin[1]-0.75, origin[2]+1.5, 0.0, 1)
-            time.sleep(4.0)
-            commander.go_to(origin[0], origin[1]+0.75, origin[2]+1.5, 0.0, 1)
-            time.sleep(4.0)
-            commander.go_to(origin[0], origin[1], origin[2]+1.5, 0.0, 1)
-            time.sleep(4.0)
-            commander.go_to(origin[0], origin[1], origin[2]+1.0, 0.0, 2)
-            time.sleep(4.0)
-            commander.land(0.05, 3.0)
+            commander.land(0.0, 3.0)
             time.sleep(3.0)
             commander.stop()
 
