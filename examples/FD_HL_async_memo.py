@@ -63,11 +63,11 @@ drone = 'Flapper'
 
 # Adress of the drone
 if (drone == 'Flapper'):
-    address = 'E7E7E7E7E7' # NimbleFlapper 2.0 Bolt
+    address = 'E7E7E7E7E3' # NimbleFlapper 2.0 Bolt
 elif (drone == 'FlapperRoadrunner'):
-    address = 'E7E7E7E7E0' # NimbleFlapper 2.0 Roadrunner
+    address = 'E7E7E7E7E3' # NimbleFlapper 2.0 Roadrunner
 elif (drone == 'CF'):
-    address = 'E7E7E7E7E7' # CF2.1
+    address = 'E7E7E7E7E3' # CF2.1
 else:
     sys.exit()
 
@@ -95,19 +95,17 @@ CMD_YAW = []
 # Change the sequence according to your setup
 #             x    y    z
 
-a = 1 #length of side
-h = 1 #height
+a = 1.5 #length of side
+h = 1.2 #height
 sequence = [
     #square
-     #   (0, 0, h),
-     #   (0, a, h),
-     #   (1.5*a, a, h),
-     #   (1.5*a, -a, h),
-     #   (-1.5*a, -a, h),
-     #   (-1.5*a, 0, h),
-     #   (0, 0, h),
-     #   (0, 0, 0.5*h),
-     #   (0, 0, 0),
+    #(0, 0, h),
+    #(a, -a, h),
+    #(-a, -a, h),
+    #(-a, 0, h),
+    #(0, 0, h),
+    #(0, 0, 0.5*h),
+    #(0 ,0 ,0),
     #I-shape
     #    (0, 0, h),
     #    (0, a, h),
@@ -178,10 +176,9 @@ sequence = [
     #    (0, 0, h),
     #    (0, 0, 0.5),
     #    (0, 0, 0),
-
 ]
 
-origin = [0.05, 0, 0.22]
+origin = [0, 0.1, -0.4]
 
 if (drone == 'Flapper') or (drone == 'FlapperRoadrunner'):
     # Setting for Nimble Flapper
@@ -273,9 +270,9 @@ def set_control_parameters_Roadrunner(scf):
     scf.cf.param.set_value('velCtlPid.vzKp', '12.5')
     scf.cf.param.set_value('velCtlPid.vzKi', '5.0')
     scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
-    scf.cf.param.set_value('posCtlPid.xBodyVelMax', '3.0')
-    scf.cf.param.set_value('posCtlPid.yBodyVelMax', '3.0')
-    scf.cf.param.set_value('posCtlPid.zVelMax', '3.0')
+    scf.cf.param.set_value('posCtlPid.xBodyVelMax', '1.0')
+    scf.cf.param.set_value('posCtlPid.yBodyVelMax', '1.0')
+    scf.cf.param.set_value('posCtlPid.zVelMax', '1.0')
 
 def set_control_parameters_Bolt(scf):
     print('Setting control parameters for Nimble Flapper Bolt')
@@ -338,20 +335,20 @@ def set_control_parameters_Bolt(scf):
     scf.cf.param.set_value('posCtlPid.xKi', '0') #0
     scf.cf.param.set_value('posCtlPid.xKd', '0.0') #0
     scf.cf.param.set_value('posCtlPid.yKp', '2.5') #2.5
-    scf.cf.param.set_value('posCtlPid.yKi', '0.2') #0
-    scf.cf.param.set_value('posCtlPid.yKd', '0.0') #0
+    scf.cf.param.set_value('posCtlPid.yKi', '0') #0
+    scf.cf.param.set_value('posCtlPid.yKd', '0') #0
     scf.cf.param.set_value('posCtlPid.zKp', '5.0')
     scf.cf.param.set_value('posCtlPid.zKi', '0.5')
     scf.cf.param.set_value('posCtlPid.zKd', '0.0')
     scf.cf.param.set_value('posCtlPid.rLimit', '25.0')
     scf.cf.param.set_value('posCtlPid.pLimit', '25.0')
     scf.cf.param.set_value('velCtlPid.vxKFF', '0.0')
-    scf.cf.param.set_value('velCtlPid.vxKp', '4') #4   tested: 6
-    scf.cf.param.set_value('velCtlPid.vxKi', '0.5') #0.5 tested:0.8
+    scf.cf.param.set_value('velCtlPid.vxKp', '6.0') #4   tested: 6
+    scf.cf.param.set_value('velCtlPid.vxKi', '0.8') #0.5 tested:0.8
     scf.cf.param.set_value('velCtlPid.vxKd', '0.2') #0 tested: 0.2
     scf.cf.param.set_value('velCtlPid.vyKFF', '0.0')
-    scf.cf.param.set_value('velCtlPid.vyKp', '4.0') #4 tested:5
-    scf.cf.param.set_value('velCtlPid.vyKi', '0.5') #0.5 tested: 0.9
+    scf.cf.param.set_value('velCtlPid.vyKp', '5.0') #4 tested:5
+    scf.cf.param.set_value('velCtlPid.vyKi', '0.9') #0.5 tested: 0.9
     scf.cf.param.set_value('velCtlPid.vyKd', '0.2') #0  tested: 0.2
     scf.cf.param.set_value('velCtlPid.vzKp', '12.5')
     scf.cf.param.set_value('velCtlPid.vzKi', '5.0')
@@ -483,9 +480,9 @@ if __name__ == '__main__':
 
     # Set these to the position and yaw based on how your Crazyflie is placed
     # on the floor
-    initial_x = 0.05
-    initial_y = 0
-    initial_z = 0.22
+    initial_x = 0
+    initial_y = 0.1
+    initial_z = -0.4
     initial_yaw = 0  # In degrees
     # 0: positive X direction
     # 90: positive Y direction
@@ -497,39 +494,39 @@ if __name__ == '__main__':
     log_vbat = LogConfig(name='pm', period_in_ms=500)
     log_vbat.add_variable('pm.vbat', 'float')
 
-    log_pos_estimate = LogConfig(name='stateEstimate', period_in_ms=50)
+    log_pos_estimate = LogConfig(name='stateEstimate', period_in_ms=20)
     log_pos_estimate.add_variable('stateEstimate.x', 'float')
     log_pos_estimate.add_variable('stateEstimate.y', 'float')
     log_pos_estimate.add_variable('stateEstimate.z', 'float')
 
-    log_att_estimate = LogConfig(name='stateEstimate', period_in_ms=50)
+    log_att_estimate = LogConfig(name='stateEstimate', period_in_ms=20)
     log_att_estimate.add_variable('stateEstimate.roll', 'float')
     log_att_estimate.add_variable('stateEstimate.pitch', 'float')
     log_att_estimate.add_variable('stateEstimate.yaw', 'float')
 
-    log_vel_estimate = LogConfig(name='stateEstimate', period_in_ms=50)
+    log_vel_estimate = LogConfig(name='stateEstimate', period_in_ms=20)
     log_vel_estimate.add_variable('stateEstimate.vx', 'float')
     log_vel_estimate.add_variable('stateEstimate.vy', 'float')
     log_vel_estimate.add_variable('stateEstimate.vz', 'float')
 
-    log_pos_ctrl = LogConfig(name='posCtl', period_in_ms=50)
+    log_pos_ctrl = LogConfig(name='posCtl', period_in_ms=20)
     log_pos_ctrl.add_variable('posCtl.targetX', 'float')
     log_pos_ctrl.add_variable('posCtl.targetY', 'float')
     log_pos_ctrl.add_variable('posCtl.targetZ', 'float')
 
-    log_att_ctrl = LogConfig(name='controller', period_in_ms=50)
+    log_att_ctrl = LogConfig(name='controller', period_in_ms=20)
     log_att_ctrl.add_variable('controller.roll', 'float') # these are setpoints!!!
     log_att_ctrl.add_variable('controller.pitch', 'float')
     log_att_ctrl.add_variable('controller.yaw', 'float')
 
-    log_vel_ctrl = LogConfig(name='posCtl', period_in_ms=50)
+    log_vel_ctrl = LogConfig(name='posCtl', period_in_ms=20)
     log_vel_ctrl.add_variable('posCtl.targetVX', 'float')
     log_vel_ctrl.add_variable('posCtl.targetVY', 'float')
     log_vel_ctrl.add_variable('posCtl.targetVZ', 'float')
 
 
     with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
-        with open('/home/guillermoga/flight_log_' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.txt', 'w') as f:
+        with open('/home/guillermoga/cyberzoo/flight_log_' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.txt', 'w') as f:
             print('Flight log' + datetime.now().strftime("%Y%m%d %H%M%S"), file=f)
 
             scf.cf.log.add_config(log_pos_estimate)

@@ -2,6 +2,10 @@
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+import csv
+
+
+create_scv = False
 
 # reading the data from the file
 
@@ -24,7 +28,9 @@ ROLL_TAR = []
 PITCH_TAR = []
 YAW_TAR = []
 
-with open("/home/guillermoga/flight_log_20210326-132958.txt") as f:
+
+txt_file = "gain_improving_20210409-143753"
+with open("/home/guillermoga/" + txt_file  + ".txt") as f:
     for line in f:
         values = line.split()
         values.pop(0)
@@ -77,67 +83,99 @@ with open("/home/guillermoga/flight_log_20210326-132958.txt") as f:
                 VX_TAR.append(float(vx))
                 VY_TAR.append(float(vy))
                 VZ_TAR.append(float(vz))
+                
+if create_scv:
+    with open("/home/guillermoga/Desktop/Tests/" + txt_file + ".csv", mode='w') as csv_file:
+        writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-'''VX = []
-VX_TAR = []
-for i in range(1, len(X)):
-    vx = (X[i] - X[i-1])
-    vx_tar = (X_TAR[i]-X_TAR[i-1])
-    VX.append(vx)
-    VX_TAR.append(vx_tar)
-    
-window_size = 30
-i = 0
-moving_averages = []
-moving_averages2 = []
+        for i in range(len(X)):
+            writer.writerow([X[i], Y[i], Z[i], VX[i], VY[i], VZ[i], ROLL[i], PITCH_TAR[i], YAW[i],
+                         X_TAR[i], Y_TAR[i], Z_TAR[i], VX_TAR[i], VY_TAR[i], VZ_TAR[i], ROLL_TAR[i], PITCH_TAR[i], YAW_TAR[i]])
 
-while i < len(VX) - window_size + 1:
-    this_window = VX[i: i + window_size]
-    window_average = sum(this_window) / window_size
-    moving_averages.append(window_average)
-    this_window2 = VX_TAR[i: i + window_size]
-    window_average2 = sum(this_window2) / window_size
-    moving_averages2.append(window_average2)
-    i += 1 '''
+
 
 fig, axs = plt.subplots(3, 3)
 axs[0, 0].plot(X)
 axs[0, 0].plot(X_TAR)
+axs[0, 0].grid()
 axs[0, 0].legend(["est", "cmd"])
 axs[0, 0].set_title("Position X")
 axs[1, 0].plot(Y)
 axs[1, 0].plot(Y_TAR)
+axs[1, 0].grid()
 axs[1, 0].legend(["est", "cmd"])
 axs[1, 0].set_title("Position Y")
 axs[2, 0].plot(Z)
 axs[2, 0].plot(Z_TAR)
+axs[2, 0].grid()
 axs[2, 0].legend(["est", "cmd"])
 axs[2, 0].set_title("Position Z")
 axs[0, 1].plot(VX)
 axs[0, 1].plot(VX_TAR)
+axs[0, 1].grid()
 axs[0, 1].legend(["est", "cmd"])
 axs[0, 1].set_title("Velocity X")
 axs[1, 1].plot(VY)
 axs[1, 1].plot(VY_TAR)
+axs[1, 1].grid()
 axs[1, 1].legend(["est", "cmd"])
 axs[1, 1].set_title("Velocity Y")
 axs[2, 1].plot(VZ)
 axs[2, 1].plot(VZ_TAR)
+axs[2, 1].grid()
 axs[2, 1].legend(["est", "cmd"])
 axs[2, 1].set_title("Velocity Z")
 axs[0, 2].plot(PITCH)
 axs[0, 2].plot(PITCH_TAR)
+axs[0, 2].grid()
 axs[0, 2].legend(["est", "cmd"])
 axs[0, 2].set_title("Pitch")
 axs[1, 2].plot(ROLL)
 axs[1, 2].plot(ROLL_TAR)
+axs[1, 2].grid()
 axs[1, 2].legend(["est", "cmd"])
 axs[1, 2].set_title("Roll")
 axs[2, 2].plot(YAW)
 axs[2, 2].plot(YAW_TAR)
+axs[2, 2].grid()
 axs[2, 2].legend(["est", "cmd"])
 axs[2, 2].set_title("Yaw")
+plt.show()
 
+VX2 = []
+VY2 = []
+VZ2 = []
+
+for i in range(1,len(X)):
+    vx2 = (X[i] - X[i-1])/ 0.05
+    VX2.append(vx2)
+
+for i in range(1,len(Y)):
+    vy2 = (Y[i] - Y[i-1])/ 0.05
+    VY2.append(vy2)
+
+for i in range(1,len(X)):
+    vz2 = (Z[i] - Z[i-1])/ 0.05
+    VZ2.append(vz2)
+
+
+
+fig2, axs2 = plt.subplots(1, 3)
+axs2[0].plot(VX2)
+axs2[0].plot(VX)
+axs2[0].grid()
+axs2[0].legend(["calculated","measured"])
+axs2[0].set_title("Velocity X")
+axs2[1].plot(VY2)
+axs2[1].plot(VY)
+axs2[1].grid()
+axs2[1].legend(["calculated","measured"])
+axs2[1].set_title("Velocity Y")
+axs2[2].plot(VZ2)
+axs2[2].plot(VZ)
+axs2[2].grid()
+axs2[2].legend(["calculated","measured"])
+axs2[2].set_title("Velocity Z")
 plt.show()
 
 
@@ -152,4 +190,3 @@ plt.show()
 
 
 
-# %%

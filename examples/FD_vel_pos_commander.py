@@ -63,11 +63,11 @@ drone = 'Flapper'
 
 # Adress of the drone
 if (drone == 'Flapper'):
-    address = 'E7E7E7E7E7' # NimbleFlapper 2.0 Bolt
+    address = 'E7E7E7E7E3' # NimbleFlapper 2.0 Bolt
 elif (drone == 'FlapperRoadrunner'):
     address = 'E7E7E7E7E0' # NimbleFlapper 2.0 Roadrunner
 elif (drone == 'CF'):
-    address = 'E7E7E7E7E7' # CF2.1
+    address = 'E7E7E7E7E3' # CF2.1
 else:
     sys.exit()
 
@@ -92,34 +92,101 @@ YAW = []
 CMD_ROLL = []
 CMD_PITCH = []
 CMD_YAW = []
+ROLL_RATE = []
+PITCH_RATE = []
+YAW_RATE = []
+CMD_ROLL_RATE = []
+CMD_PITCH_RATE = []
+CMD_YAW_RATE = []
 # Change the sequence according to your setup
 #             x    y    z
 
-a = 1 #length of side
+a = 1.5 #length of side
 h = 1 #height
-
 sequence = [
     #square
-     #   (0, 0, h),
-     #   (0, a, h),
-     #   (1.5*a, a, h),
-     #   (1.5*a, -a, h),
-     #   (-1.5*a, -a, h),
-     #   (-1.5*a, 0, h),
-     #   (0, 0, h),
-     #   (0, 0, 0.5*h),
-     #   (0, 0, 0),
+    #(0, 0, h),
+    #(a, 0, h),
+    #(a, a, h),
+    #(0, a, h),
+    #(0, 0, h),
+    #(0, 0, 0.3*h),
+    #(0 ,0 ,0),
+    #I-shape
+    #    (0, 0, h),
+    #    (0, a, h),
+    #    (a, a, h),
+    #    (a, -2*a, h),
+    #    (0, -2*a, h),
+    #    (0, -a, h),
+    #    (-a, -a, h),
+    #    (-a, -2*a, h),
+    #   (-2*a, -2*a, h),
+    #    (-2*a, a, h),
+    #    (-a, a, h),
+    #    (-a, 0, h),
+    #    (0, 0, h),
+    #    (0, 0, 0.5),
+    #    (0, 0, 0),
+    #Spiral
+    #    (0, 0, h),
+    #    (0, a, h),
+    #    (1.5*a, a, h),
+    #    (1.5*a, -2*a, h),
+    #    (-1.5*a, -2*a, h),
+    #    (-1.5*a, a, h),
+    #    (-a, a, h),
+    #    (-a, 0, h),
+    #    (0, 0, h),
+    #    (0, 0, 0.5),
+    #    (0, 0 ,0),
+    #hexagon
+    #    (0, 0, h),
+    #    (0.866*a, -0.5*a, h),
+    #    (0.866*a, -1.5*a, h),
+    #    (0, -2*a, h),
+    #    (-0.866*a, -1.5*a, h),
+    #    (-0.866*a, -0.5*a, h),
+    #    (0, 0, h),
+    #    (0, 0, 0.5),
+    #    (0, 0, 0),
+    #rhombus
+    #    (0, 0, h),
+    #    (-1.5*a, -1.5*a, h),
+    #    (0, -3*a, h),
+    #    (1.5*a, -1.5*a, h),
+    #    (0, 0, h),
+    #    (0, 0, 0.5),
+    #    (0, 0, 0),
     #hover
-    (0, 0, 0.5*h),
-    (0, 0, h),
-    #(a, 0, h),
-    #(a, 0, h),
-    (0, 0, h),
-    (0, 0, 0.5*h),
-    (0, 0, 0),
+    #(0, 0, 0.5*h, 0),
+    (0, 0, h, 0),
+    (a, 0, h, 0),
+    (a, 0, h, 0),
+    (0, 0, h, 0),
+    #(0, -a, h),
+    #(0, -a, h),
+    #(0, 0, h, 0),
+    (0, 0, 0.5*h, 0),
+    #(0, 0, h),
+    #(0, 0, h),
+    #(0, 0, 0),
+    #asterisk
+    #    (0, 0, h),'
+    #    (0, -a ,h),
+    #    (-a, a, h),
+    #    (a, 0, h),
+    #    (-a, -a, h),
+    #    (0, a, h),
+    #    (a, -a, h),
+    #    (-a, 0, h),
+    #    (a, a, h),
+    #    (0, 0, h),
+    #    (0, 0, 0.5),
+    #    (0, 0, 0),
 ]
 
-origin = [0.05, 0, 0.2]
+origin = [0, -0.1, 0.1]
 
 if (drone == 'Flapper') or (drone == 'FlapperRoadrunner'):
     # Setting for Nimble Flapper
@@ -172,14 +239,16 @@ def wait_for_position_estimator(scf):
                 break
 
 
+
 def set_control_parameters_Bolt(scf):
     print('Setting control parameters for Nimble Flapper Bolt')
 
-    scf.cf.param.set_value('attFilt.rateFiltEn', '1') #1
-    scf.cf.param.set_value('attFilt.omxFiltCut', '15') #12.5
-    scf.cf.param.set_value('attFilt.omyFiltCut', '25') #12.5
-    scf.cf.param.set_value('attFilt.omzFiltCut', '5.0') #5.0
 
+    #Low pass filters
+    scf.cf.param.set_value('attFilt.rateFiltEn', '1') #1
+    scf.cf.param.set_value('attFilt.omxFiltCut', '12.5') #12.5
+    scf.cf.param.set_value('attFilt.omyFiltCut', '12.5') #12.5
+    scf.cf.param.set_value('attFilt.omzFiltCut', '5.0') #5.0
     scf.cf.param.set_value('attFilt.attFiltEn', '0') #0
     scf.cf.param.set_value('attFilt.attFiltCut', '15.0') #15.0
 
@@ -195,31 +264,61 @@ def set_control_parameters_Bolt(scf):
     scf.cf.param.set_value('posVelFilt.velZFiltCut', '10.0')
     scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
     scf.cf.param.set_value('posCtlPid.thrustMin', '15000')
-    scf.cf.param.set_value('posCtlPid.xKp', '6.0') #4
-    scf.cf.param.set_value('posCtlPid.xKi', '0') #0
-    scf.cf.param.set_value('posCtlPid.xKd', '0.0') #0
-    scf.cf.param.set_value('posCtlPid.yKp', '2.5') #2.5
-    scf.cf.param.set_value('posCtlPid.yKi', '0.2') #0
-    scf.cf.param.set_value('posCtlPid.yKd', '0.0') #0
-    scf.cf.param.set_value('posCtlPid.zKp', '5.0')
-    scf.cf.param.set_value('posCtlPid.zKi', '0.5')
-    scf.cf.param.set_value('posCtlPid.zKd', '0.0')
-    scf.cf.param.set_value('posCtlPid.rLimit', '25.0')
-    scf.cf.param.set_value('posCtlPid.pLimit', '25.0')
-    scf.cf.param.set_value('velCtlPid.vxKFF', '0.0')
-    scf.cf.param.set_value('velCtlPid.vxKp', '4') #4   tested: 6
-    scf.cf.param.set_value('velCtlPid.vxKi', '0.5') #0.5 tested:0.8
-    scf.cf.param.set_value('velCtlPid.vxKd', '0.2') #0 tested: 0.2
-    scf.cf.param.set_value('velCtlPid.vyKFF', '0.0')
-    scf.cf.param.set_value('velCtlPid.vyKp', '4.0') #4 tested:5
+
+    #POSITION
+    scf.cf.param.set_value('posCtlPid.xKp', '9.5') #4 6 test_good: 9.5
+    scf.cf.param.set_value('posCtlPid.xKi', '0') #0 test_good: 0
+    scf.cf.param.set_value('posCtlPid.xKd', '1.0') #0   test_good 1.0
+    scf.cf.param.set_value('posCtlPid.yKp', '5.5') #2.5
+    scf.cf.param.set_value('posCtlPid.yKi', '0') #0
+    scf.cf.param.set_value('posCtlPid.yKd', '0') #0 
+    scf.cf.param.set_value('posCtlPid.zKp', '5.0') #5 
+    scf.cf.param.set_value('posCtlPid.zKi', '0.5') #0.5
+    scf.cf.param.set_value('posCtlPid.zKd', '0.0') #0
+    scf.cf.param.set_value('posCtlPid.rLimit', '45.0') #25
+    scf.cf.param.set_value('posCtlPid.pLimit', '40.0') #25
+
+    #VELOCITY
+    scf.cf.param.set_value('velCtlPid.vxKFF', '2.0') #0 tested: 0.7
+    scf.cf.param.set_value('velCtlPid.vxKp', '6.5') #4   tested: 6
+    scf.cf.param.set_value('velCtlPid.vxKi', '1.0') #0.5 tested:0.8
+    scf.cf.param.set_value('velCtlPid.vxKd', '0') #0 tested: 0.2
+    scf.cf.param.set_value('velCtlPid.vyKFF', '1.0') #0
+    scf.cf.param.set_value('velCtlPid.vyKp', '5.0') #4 tested:5
     scf.cf.param.set_value('velCtlPid.vyKi', '0.5') #0.5 tested: 0.9
-    scf.cf.param.set_value('velCtlPid.vyKd', '0.2') #0  tested: 0.2
-    scf.cf.param.set_value('velCtlPid.vzKp', '12.5')
-    scf.cf.param.set_value('velCtlPid.vzKi', '5.0')
-    scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
-    scf.cf.param.set_value('posCtlPid.xBodyVelMax', '3.0')
-    scf.cf.param.set_value('posCtlPid.yBodyVelMax', '3.0')
-    scf.cf.param.set_value('posCtlPid.zVelMax', '3.0')
+    scf.cf.param.set_value('velCtlPid.vyKd', '0') #0  tested: 0.2
+    scf.cf.param.set_value('velCtlPid.vzKp', '12.5') #12.5
+    scf.cf.param.set_value('velCtlPid.vzKi', '5.0') #5
+    scf.cf.param.set_value('velCtlPid.vzKd', '0.0') #0
+
+    #MAX VELOCITIES
+    scf.cf.param.set_value('posCtlPid.xBodyVelMax', '1.0') #3
+    scf.cf.param.set_value('posCtlPid.yBodyVelMax', '1.0') #3
+    scf.cf.param.set_value('posCtlPid.zVelMax', '1.0') #3
+
+    #PITCH, ROLL & YAW 
+    scf.cf.param.set_value('pid_attitude.yawFeedForw', '0') #220
+    scf.cf.param.set_value('pid_attitude.pitch_kp', '15.0') #13  test_good:15
+    scf.cf.param.set_value('pid_attitude.pitch_ki', '12.5')  #0  test:12.5
+    scf.cf.param.set_value('pid_attitude.pitch_kd', '1')  #1    test:1 
+    scf.cf.param.set_value('pid_attitude.roll_kp', '10.0')  #15   test:10
+    scf.cf.param.set_value('pid_attitude.roll_ki', '1')   #0    test:1
+    scf.cf.param.set_value('pid_attitude.roll_kd', '0.2')   #1    test:0.2
+    scf.cf.param.set_value('pid_attitude.yaw_kp', '15.0')   #30   test:45
+    scf.cf.param.set_value('pid_attitude.yaw_ki', '10.0')   #0    test:20
+    scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0')    #1    test:1
+
+    #ATTITUDE RATES
+    scf.cf.param.set_value('pid_rate.pitch_kp', '62.0')  #70
+    scf.cf.param.set_value('pid_rate.pitch_ki', '0')  
+    scf.cf.param.set_value('pid_rate.pitch_kd', '0') 
+    scf.cf.param.set_value('pid_rate.roll_kp', '20.0')  #50
+    scf.cf.param.set_value('pid_rate.roll_ki', '0')   
+    scf.cf.param.set_value('pid_rate.roll_kd', '0')   
+    scf.cf.param.set_value('pid_rate.yaw_kp', '60.0')   #80 
+    scf.cf.param.set_value('pid_rate.yaw_ki', '0')   
+    scf.cf.param.set_value('pid_rate.yaw_kd', '0')   
+
 
 def set_control_parameters_CF(scf):
     print('Setting control parameters for Crazyflie')
@@ -227,12 +326,12 @@ def set_control_parameters_CF(scf):
     scf.cf.param.set_value('posCtlPid.xyVelMax', '3.0')
     scf.cf.param.set_value('posCtlPid.zVelMax', '3.0')
 
-def set_initial_position(scf, x, y, z, yaw_deg):
+def set_initial_position(scf, x, y, z, yaw):
     scf.cf.param.set_value('kalman.initialX', x)
     scf.cf.param.set_value('kalman.initialY', y)
     scf.cf.param.set_value('kalman.initialZ', z)
 
-    yaw_radians = math.radians(yaw_deg)
+    yaw_radians = yaw
     scf.cf.param.set_value('kalman.initialYaw', yaw_radians)
 
 
@@ -271,6 +370,10 @@ def log_async_callback(timestamp, data, logconf):
     if 'pm.vbat' in data:
         global vbat
         vbat = data['pm.vbat']
+    #if 'stateEstimate.x' in data:
+    #    data["timestamp"] = timestamp
+    #    writer = csv.DictWriter(open('/home/guillermoga/flight_log.csv', 'a+', newline=''), fieldnames=["timestamp","stateEstimate.x","stateEstimate.y","stateEstimate.z"])
+    #    writer.writerow(data)
 
 def log_and_print_async_callback(timestamp, data, logconf):
     print('[%d]: %s' % (timestamp, data), file=f)
@@ -304,6 +407,16 @@ def attitude_estimate_callback(timestamp, data, logconf):
     PITCH.append(pitch)
     YAW.append(yaw)
 
+def attitude_rate_estimate_callback(timestamp, data, logconf):
+    print('[%d]: %s' % (timestamp, data), file=f)
+    roll = data["stateEstimateZ.rateRoll"]
+    pitch = data["stateEstimateZ.ratePitch"]
+    yaw = data["stateEstimateZ.rateYaw"]
+    ROLL_RATE.append(roll)
+    PITCH_RATE.append(pitch)
+    YAW_RATE.append(yaw)
+
+
 def position_control_callback(timestamp, data, logconf):
     print('[%d]: %s' % (timestamp, data), file=f)
     tar_x = data["posCtl.targetX"]
@@ -331,6 +444,15 @@ def attitude_control_callback(timestamp, data, logconf):
     CMD_PITCH.append(pitch)
     CMD_YAW.append(yaw)
 
+def attitude_rate_control_callback(timestamp, data, logconf):
+    print('[%d]: %s' % (timestamp, data), file=f)
+    roll = data["controller.rollRate"]
+    pitch = data["controller.pitchRate"]
+    yaw = data["controller.yawRate"]
+    CMD_ROLL_RATE.append(roll)
+    CMD_PITCH_RATE.append(pitch)
+    CMD_YAW_RATE.append(yaw)
+
 def activate_high_level_commander(cf):
     cf.param.set_value('commander.enHighLevel', '1')
 
@@ -340,10 +462,11 @@ if __name__ == '__main__':
 
     # Set these to the position and yaw based on how your Crazyflie is placed
     # on the floor
-    initial_x = 0.05
-    initial_y = 0
-    initial_z = 0.2
+    initial_x = 0
+    initial_y = -0.1
+    initial_z = 0.1
     initial_yaw = 0  # In degrees
+    landing_yaw = 0
     # 0: positive X direction
     # 90: positive Y direction
     # 180: negative X direction
@@ -358,7 +481,7 @@ if __name__ == '__main__':
     log_pos_estimate.add_variable('stateEstimate.x', 'float')
     log_pos_estimate.add_variable('stateEstimate.y', 'float')
     log_pos_estimate.add_variable('stateEstimate.z', 'float')
-
+ 
     log_att_estimate = LogConfig(name='stateEstimate', period_in_ms=50)
     log_att_estimate.add_variable('stateEstimate.roll', 'float')
     log_att_estimate.add_variable('stateEstimate.pitch', 'float')
@@ -368,6 +491,11 @@ if __name__ == '__main__':
     log_vel_estimate.add_variable('stateEstimate.vx', 'float')
     log_vel_estimate.add_variable('stateEstimate.vy', 'float')
     log_vel_estimate.add_variable('stateEstimate.vz', 'float')
+
+    log_att_rate_estimate = LogConfig(name='stateEstimateZ', period_in_ms=50)
+    log_att_rate_estimate.add_variable('stateEstimateZ.rateRoll', 'float') 
+    log_att_rate_estimate.add_variable('stateEstimateZ.ratePitch', 'float')
+    log_att_rate_estimate.add_variable('stateEstimateZ.rateYaw', 'float')
 
     log_pos_ctrl = LogConfig(name='posCtl', period_in_ms=50)
     log_pos_ctrl.add_variable('posCtl.targetX', 'float')
@@ -384,9 +512,14 @@ if __name__ == '__main__':
     log_vel_ctrl.add_variable('posCtl.targetVY', 'float')
     log_vel_ctrl.add_variable('posCtl.targetVZ', 'float')
 
+    log_att_rate_ctrl = LogConfig(name='controller', period_in_ms=50)
+    log_att_rate_ctrl.add_variable('controller.rollRate', 'float') 
+    log_att_rate_ctrl.add_variable('controller.pitchRate', 'float')
+    log_att_rate_ctrl.add_variable('controller.yawRate', 'float')
+
 
     with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
-        with open(datetime.now().strftime("%Y%m%d-%H%M%S") + '.txt', 'w') as f:
+        with open('/home/guillermoga/testing_trim_' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.txt', 'w') as f:
             print('Flight log' + datetime.now().strftime("%Y%m%d %H%M%S"), file=f)
 
             scf.cf.log.add_config(log_pos_estimate)
@@ -401,7 +534,10 @@ if __name__ == '__main__':
             log_vel_ctrl.data_received_cb.add_callback(velocity_control_callback)
             scf.cf.log.add_config(log_att_ctrl)
             log_att_ctrl.data_received_cb.add_callback(attitude_control_callback)
-
+            scf.cf.log.add_config(log_att_rate_estimate)
+            log_att_rate_estimate.data_received_cb.add_callback(attitude_rate_estimate_callback)            
+            scf.cf.log.add_config(log_att_rate_ctrl)
+            log_att_rate_ctrl.data_received_cb.add_callback(attitude_rate_control_callback)
 
             log_async_setup(scf, log_vbat)
             log_vbat.start()
@@ -415,8 +551,6 @@ if __name__ == '__main__':
 
             if (drone == 'Flapper'):
                 set_control_parameters_Bolt(scf)
-            elif (drone == 'FlapperRoadrunner'):
-                set_control_parameters_Roadrunner(scf)
             elif (drone == 'CF'):
                 set_control_parameters_CF(scf)
 
@@ -431,6 +565,11 @@ if __name__ == '__main__':
             log_pos_ctrl.start()
             log_vel_ctrl.start()
             log_att_ctrl.start()
+            log_att_rate_estimate.start()
+            log_att_rate_ctrl.start()
+
+            # unlock the engines
+            # cf.commander.send_setpoint(0, 0, 0, 0)
 
             activate_high_level_commander(cf)
             time.sleep(0.2)
@@ -438,9 +577,9 @@ if __name__ == '__main__':
 
             commander.takeoff(-0.5, 0.001) # setting the setpoint underground to spinup the motors before taking off
             time.sleep(0.01)
-            commander.go_to(origin[0], origin[1], origin[2]-0.5, 0.0, 0.01) # (re)set the setpoint, sometimes xy stays at [0,0]
+            commander.go_to(origin[0], origin[1], origin[2]-0.5, initial_yaw, 0.01) # (re)set the setpoint, sometimes xy stays at [0,0]
             time.sleep(0.2)
-            commander.go_to(origin[0], origin[1], origin[2], 0.0, 1.5)
+            commander.go_to(origin[0], origin[1], origin[2], initial_yaw, 1.5)
             time.sleep(0.2)
 
             for position in sequence:
@@ -449,11 +588,16 @@ if __name__ == '__main__':
                 x = position[0] + initial_x
                 y = position[1] + initial_y
                 z = position[2] + initial_z
+                yaw = position[3]
 
-                commander.go_to(x, y, z, 0.0, 4)
+                commander.go_to(x, y, z, yaw, 4)
                 time.sleep(4)
 
-            commander.land(initial_z - 0.5, 3.0)
+
+
+            #commander.go_to(initial_x, initial_y, initial_z, 0.0, 2)
+            #time.sleep(2.0)
+            commander.land(initial_z - 0.5, 3.0, yaw= landing_yaw)
             time.sleep(3.0)
             commander.stop()
 
@@ -464,43 +608,69 @@ if __name__ == '__main__':
             log_pos_ctrl.stop()
             log_vel_ctrl.stop()
             log_att_ctrl.stop()
+            log_att_rate_estimate.stop()
+            log_att_rate_ctrl.stop()
 
-            fig, axs = plt.subplots(3, 3)
+            fig, axs = plt.subplots(3, 4)
             axs[0, 0].plot(POSITION_X)
             axs[0, 0].plot(TARGET_X)
+            axs[0, 0].grid()
             axs[0, 0].legend(["est", "cmd"])
             axs[0, 0].set_title("Position X")
-            axs[1, 0].plot(POSITION_Y)
+            axs[1, 0].plot(POSITION_Y )
             axs[1, 0].plot(TARGET_Y)
+            axs[1, 0].grid()
             axs[1, 0].legend(["est", "cmd"])
             axs[1, 0].set_title("Position Y")
             axs[2, 0].plot(POSITION_Z)
             axs[2, 0].plot(TARGET_Z)
+            axs[2, 0].grid()
             axs[2, 0].legend(["est", "cmd"])
             axs[2, 0].set_title("Position Z")
-            axs[0, 1].plot(PITCH)
-            axs[0, 1].plot(CMD_PITCH)
+            axs[0, 1].plot(VX)
+            axs[0, 1].plot(TARGET_VX)
+            axs[0, 1].grid()
             axs[0, 1].legend(["est", "cmd"])
-            axs[0, 1].set_title("Pitch")
-            axs[1, 1].plot(ROLL)
-            axs[1, 1].plot(CMD_ROLL)
+            axs[0, 1].set_title("Velocity X")
+            axs[1, 1].plot(VY)
+            axs[1, 1].plot(TARGET_VY)
+            axs[1, 1].grid()
             axs[1, 1].legend(["est", "cmd"])
-            axs[1, 1].set_title("Roll")
-            axs[2, 1].plot(YAW)
-            axs[2, 1].plot(CMD_YAW)
+            axs[1, 1].set_title("Velocity Y")
+            axs[2, 1].plot(VZ)
+            axs[2, 1].plot(TARGET_VZ)
+            axs[2, 1].grid()
             axs[2, 1].legend(["est", "cmd"])
-            axs[2, 1].set_title("Yaw")
-            axs[0, 2].plot(VX)
-            axs[0, 2].plot(TARGET_VX)
+            axs[2, 1].set_title("Velocity Z")
+            axs[0, 2].plot(PITCH)
+            axs[0, 2].plot(CMD_PITCH)
+            axs[0, 2].grid()
             axs[0, 2].legend(["est", "cmd"])
-            axs[0, 2].set_title("Velocity X")
-            axs[1, 2].plot(VY)
-            axs[1, 2].plot(TARGET_VY)
+            axs[0, 2].set_title("Pitch")
+            axs[1, 2].plot(ROLL)
+            axs[1, 2].plot(CMD_ROLL)
+            axs[1, 2].grid()
             axs[1, 2].legend(["est", "cmd"])
-            axs[1, 2].set_title("Velocity Y")
-            axs[2, 2].plot(VZ)
-            axs[2, 2].plot(TARGET_VZ)
+            axs[1, 2].set_title("Roll")
+            axs[2, 2].plot(YAW)
+            axs[2, 2].plot(CMD_YAW)
+            axs[2, 2].grid()
             axs[2, 2].legend(["est", "cmd"])
-            axs[2, 2].set_title("Velocity Z")
+            axs[2, 2].set_title("Yaw")
+            axs[0, 3].plot(PITCH_RATE)
+            axs[0, 3].plot(CMD_PITCH_RATE)
+            axs[0, 3].grid()
+            axs[0, 3].legend(["est","cmd"])
+            axs[0, 3].set_title("Pitch rate")
+            axs[1, 3].plot(ROLL_RATE)
+            axs[1, 3].plot(CMD_ROLL_RATE)
+            axs[1, 3].grid()
+            axs[1, 3].legend(["est", "cmd"])
+            axs[1, 3].set_title("Roll rate")
+            axs[2, 3].plot(YAW_RATE)
+            axs[2, 3].plot(CMD_YAW_RATE)
+            axs[2, 3].grid()
+            axs[2, 3].legend(["est","cmd"])
+            axs[2, 3].set_title("Yaw rate")
             plt.show()
 

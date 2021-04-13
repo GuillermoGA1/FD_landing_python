@@ -63,11 +63,11 @@ drone = 'Flapper'
 
 # Adress of the drone
 if (drone == 'Flapper'):
-    address = 'E7E7E7E7E7' # NimbleFlapper 2.0 Bolt
+    address = 'E7E7E7E7E3' # NimbleFlapper 2.0 Bolt
 elif (drone == 'FlapperRoadrunner'):
-    address = 'E7E7E7E7E0' # NimbleFlapper 2.0 Roadrunner
+    address = 'E7E7E7E7E3' # NimbleFlapper 2.0 Roadrunner
 elif (drone == 'CF'):
-    address = 'E7E7E7E7E7' # CF2.1
+    address = 'E7E7E7E7E3' # CF2.1
 else:
     sys.exit()
 
@@ -80,6 +80,12 @@ POSITION_Z = []
 TARGET_X = []
 TARGET_Y = []
 TARGET_Z = []
+VX = []
+VY = []
+VZ = []
+TARGET_VX = []
+TARGET_VY = []
+TARGET_VZ = []
 ROLL = []
 PITCH = []
 YAW = []
@@ -87,7 +93,8 @@ CMD_ROLL = []
 CMD_PITCH = []
 CMD_YAW = []
 
-origin = [0, 0, -0.3]
+
+origin = [0.05, -0.1, 0.1]
 
 if (drone == 'Flapper') or (drone == 'FlapperRoadrunner'):
     # Setting for Nimble Flapper
@@ -111,7 +118,7 @@ def wait_for_position_estimator(scf):
     var_x_history = [1000] * 10
     var_z_history = [1000] * 10
 
-    threshold = 0.0008
+    threshold = 0.001  #0.001
 
     with SyncLogger(scf, log_config) as logger:
         for log_entry in logger:
@@ -140,140 +147,8 @@ def wait_for_position_estimator(scf):
                 break
 
 
-def set_control_parameters_Roadrunner(scf):
-    print('Setting control parameters for Nimble Flapper Roadrunner')
-
-    scf.cf.param.set_value('attFilt.rateFiltEn', '1') #1
-    scf.cf.param.set_value('attFilt.omxFiltCut', '12.5') #12.5
-    scf.cf.param.set_value('attFilt.omyFiltCut', '12.5') #12.5
-    scf.cf.param.set_value('attFilt.omzFiltCut', '5.0') #5.0
-
-    scf.cf.param.set_value('attFilt.attFiltEn', '0') #0
-    scf.cf.param.set_value('attFilt.attFiltCut', '15.0') #15.0
-
-    # scf.cf.param.set_value('pid_attitude.roll_kp', '15.0') #15
-    # scf.cf.param.set_value('pid_attitude.roll_kd', '1.0') #1
-    # scf.cf.param.set_value('pid_rate.roll_kp', '50.0') #50
-    # scf.cf.param.set_value('pid_attitude.pitch_kp', '13.0') #13
-    # scf.cf.param.set_value('pid_attitude.pitch_kd', '1.0') #1
-    # scf.cf.param.set_value('pid_rate.pitch_kp', '70.0') #70
-    # scf.cf.param.set_value('pid_attitude.yaw_kp', '30.0') #30
-    # scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0') #1
-    # scf.cf.param.set_value('pid_rate.yaw_kp', '100.0') #100
-    # scf.cf.param.set_value('pid_attitude.yawFeedForw', '220.0') #220.0
-
-    # # Single loop in-body control
-    # scf.cf.param.set_value('posCtlPid.singleLoop', '1')
-    # scf.cf.param.set_value('posVelFilt.posFiltEn', '1')
-    # scf.cf.param.set_value('posVelFilt.posFiltCut', '7.0')
-    # scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    # scf.cf.param.set_value('posCtlPid.thrustMin', '20000')
-    # scf.cf.param.set_value('posCtlPid.xKp', '32.0') #32
-    # scf.cf.param.set_value('posCtlPid.xKi', '2.0')
-    # scf.cf.param.set_value('posCtlPid.xKd', '8.0') #8
-    # scf.cf.param.set_value('posCtlPid.yKp', '25.0') #25
-    # scf.cf.param.set_value('posCtlPid.yKi', '2.0')
-    # scf.cf.param.set_value('posCtlPid.yKd', '10.0') #10
-    # scf.cf.param.set_value('posCtlPid.zKp', '62.5')
-    # scf.cf.param.set_value('posCtlPid.zKi', '6.0')
-    # scf.cf.param.set_value('posCtlPid.zKd', '12.6')
-    # scf.cf.param.set_value('posCtlPid.rpLimit', '20.0')
-
-    # Double loop in-body control - initial parameters
-    # scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    # scf.cf.param.set_value('posCtlPid.thrustMin', '20000')
-    # scf.cf.param.set_value('posCtlPid.xKp', '4.0')
-    # scf.cf.param.set_value('posCtlPid.xKi', '0.25')
-    # scf.cf.param.set_value('posCtlPid.xKd', '1.0')
-    # scf.cf.param.set_value('posCtlPid.yKp', '2.5')
-    # scf.cf.param.set_value('posCtlPid.yKi', '0.2')
-    # scf.cf.param.set_value('posCtlPid.yKd', '1.0')
-    # scf.cf.param.set_value('posCtlPid.zKp', '5.0')
-    # scf.cf.param.set_value('posCtlPid.zKi', '0.5')
-    # scf.cf.param.set_value('posCtlPid.zKd', '1.0')
-    # scf.cf.param.set_value('posCtlPid.rLimit', '20.0')
-    # scf.cf.param.set_value('posCtlPid.pLimit', '20.0')
-    # scf.cf.param.set_value('velCtlPid.vxKp', '8.0')
-    # scf.cf.param.set_value('velCtlPid.vxKi', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vxKd', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vyKp', '10.0')
-    # scf.cf.param.set_value('velCtlPid.vyKi', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vyKd', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vzKp', '12.5')
-    # scf.cf.param.set_value('velCtlPid.vzKi', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
-    # scf.cf.param.set_value('posCtlPid.xBodyVelMax', '3.0')
-    # scf.cf.param.set_value('posCtlPid.yBodyVelMax', '3.0')
-    # scf.cf.param.set_value('posCtlPid.zVelMax', '3.0')
-
-    # # Double loop in-body control
-    scf.cf.param.set_value('posCtlPid.singleLoop', '0')
-    scf.cf.param.set_value('posVelFilt.posFiltEn', '0')
-    scf.cf.param.set_value('posVelFilt.posFiltCut', '5.0')
-    scf.cf.param.set_value('posVelFilt.velFiltEn', '1')
-    scf.cf.param.set_value('posVelFilt.velFiltCut', '10.0')
-    scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    scf.cf.param.set_value('posCtlPid.thrustMin', '20000')
-    scf.cf.param.set_value('posCtlPid.xKp', '6.0')
-    scf.cf.param.set_value('posCtlPid.xKi', '0.0')
-    scf.cf.param.set_value('posCtlPid.xKd', '0.0')
-    scf.cf.param.set_value('posCtlPid.yKp', '3.5')
-    scf.cf.param.set_value('posCtlPid.yKi', '0.0')
-    scf.cf.param.set_value('posCtlPid.yKd', '0.0')
-    scf.cf.param.set_value('posCtlPid.zKp', '5.0')
-    scf.cf.param.set_value('posCtlPid.zKi', '0.5')
-    scf.cf.param.set_value('posCtlPid.zKd', '0.0')
-    scf.cf.param.set_value('posCtlPid.rLimit', '25.0')
-    scf.cf.param.set_value('posCtlPid.pLimit', '25.0')
-    scf.cf.param.set_value('velCtlPid.vxKp', '6.0')
-    scf.cf.param.set_value('velCtlPid.vxKi', '0.5')
-    scf.cf.param.set_value('velCtlPid.vxKd', '0.0')
-    scf.cf.param.set_value('velCtlPid.vyKp', '10.0')
-    scf.cf.param.set_value('velCtlPid.vyKi', '0.5')
-    scf.cf.param.set_value('velCtlPid.vyKd', '0.0')
-    scf.cf.param.set_value('velCtlPid.vzKp', '12.5')
-    scf.cf.param.set_value('velCtlPid.vzKi', '5.0')
-    scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
-    scf.cf.param.set_value('posCtlPid.xBodyVelMax', '3.0')
-    scf.cf.param.set_value('posCtlPid.yBodyVelMax', '3.0')
-    scf.cf.param.set_value('posCtlPid.zVelMax', '3.0')
-
 def set_control_parameters_Bolt(scf):
     print('Setting control parameters for Nimble Flapper Bolt')
-
-    # scf.cf.param.set_value('pid_attitude.roll_kp', '15.0') #15
-    # scf.cf.param.set_value('pid_attitude.roll_kd', '1.0') #1
-    # scf.cf.param.set_value('pid_rate.roll_kp', '50.0') #50
-    # scf.cf.param.set_value('pid_attitude.yaw_kp', '30.0')
-    # scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0')
-    # scf.cf.param.set_value('pid_rate.yaw_kp', '80.0')
-
-    # # Double loop in-body control
-    # scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
-    # scf.cf.param.set_value('posCtlPid.thrustMin', '20000')
-    # scf.cf.param.set_value('posCtlPid.xKp', '4.0')
-    # scf.cf.param.set_value('posCtlPid.xKi', '0.0')
-    # scf.cf.param.set_value('posCtlPid.xKd', '0.0')
-    # scf.cf.param.set_value('posCtlPid.yKp', '2.5')
-    # scf.cf.param.set_value('posCtlPid.yKi', '0.0')
-    # scf.cf.param.set_value('posCtlPid.yKd', '0.0')
-    # scf.cf.param.set_value('posCtlPid.zKp', '5.0')
-    # scf.cf.param.set_value('posCtlPid.zKi', '0.5')
-    # scf.cf.param.set_value('posCtlPid.zKd', '0.0')
-    # scf.cf.param.set_value('posCtlPid.rLimit', '25.0')
-    # scf.cf.param.set_value('posCtlPid.pLimit', '25.0')
-    # scf.cf.param.set_value('velCtlPid.vxKp', '4.0')
-    # scf.cf.param.set_value('velCtlPid.vxKi', '0.5')
-    # scf.cf.param.set_value('velCtlPid.vxKd', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vyKp', '10.0')
-    # scf.cf.param.set_value('velCtlPid.vyKi', '0.5')
-    # scf.cf.param.set_value('velCtlPid.vyKd', '0.0')
-    # scf.cf.param.set_value('velCtlPid.vzKp', '12.5')
-    # scf.cf.param.set_value('velCtlPid.vzKi', '5.0')
-    # scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
-    # scf.cf.param.set_value('posCtlPid.xBodyVelMax', '3.0')
-    # scf.cf.param.set_value('posCtlPid.yBodyVelMax', '3.0')
-    # scf.cf.param.set_value('posCtlPid.zVelMax', '3.0')
 
     scf.cf.param.set_value('attFilt.rateFiltEn', '1') #1
     scf.cf.param.set_value('attFilt.omxFiltCut', '15') #12.5
@@ -295,25 +170,25 @@ def set_control_parameters_Bolt(scf):
     scf.cf.param.set_value('posVelFilt.velZFiltCut', '10.0')
     scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
     scf.cf.param.set_value('posCtlPid.thrustMin', '15000')
-    scf.cf.param.set_value('posCtlPid.xKp', '4.0')
-    scf.cf.param.set_value('posCtlPid.xKi', '0.0')
-    scf.cf.param.set_value('posCtlPid.xKd', '0.0')
-    scf.cf.param.set_value('posCtlPid.yKp', '2.5')
-    scf.cf.param.set_value('posCtlPid.yKi', '0.0')
-    scf.cf.param.set_value('posCtlPid.yKd', '0.0')
+    scf.cf.param.set_value('posCtlPid.xKp', '6.0') #4
+    scf.cf.param.set_value('posCtlPid.xKi', '0') #0
+    scf.cf.param.set_value('posCtlPid.xKd', '0.0') #0
+    scf.cf.param.set_value('posCtlPid.yKp', '2.5') #2.5
+    scf.cf.param.set_value('posCtlPid.yKi', '0.2') #0
+    scf.cf.param.set_value('posCtlPid.yKd', '0.0') #0
     scf.cf.param.set_value('posCtlPid.zKp', '5.0')
     scf.cf.param.set_value('posCtlPid.zKi', '0.5')
     scf.cf.param.set_value('posCtlPid.zKd', '0.0')
     scf.cf.param.set_value('posCtlPid.rLimit', '25.0')
     scf.cf.param.set_value('posCtlPid.pLimit', '25.0')
     scf.cf.param.set_value('velCtlPid.vxKFF', '0.0')
-    scf.cf.param.set_value('velCtlPid.vxKp', '4.0')
-    scf.cf.param.set_value('velCtlPid.vxKi', '0.5')
-    scf.cf.param.set_value('velCtlPid.vxKd', '0.0')
+    scf.cf.param.set_value('velCtlPid.vxKp', '4') #4   tested: 6
+    scf.cf.param.set_value('velCtlPid.vxKi', '0.5') #0.5 tested:0.8
+    scf.cf.param.set_value('velCtlPid.vxKd', '0.2') #0 tested: 0.2
     scf.cf.param.set_value('velCtlPid.vyKFF', '0.0')
-    scf.cf.param.set_value('velCtlPid.vyKp', '10.0')
-    scf.cf.param.set_value('velCtlPid.vyKi', '0.5')
-    scf.cf.param.set_value('velCtlPid.vyKd', '0.0')
+    scf.cf.param.set_value('velCtlPid.vyKp', '4.0') #4 tested:5
+    scf.cf.param.set_value('velCtlPid.vyKi', '0.5') #0.5 tested: 0.9
+    scf.cf.param.set_value('velCtlPid.vyKd', '0.2') #0  tested: 0.2
     scf.cf.param.set_value('velCtlPid.vzKp', '12.5')
     scf.cf.param.set_value('velCtlPid.vzKi', '5.0')
     scf.cf.param.set_value('velCtlPid.vzKd', '0.0')
@@ -371,41 +246,40 @@ def log_async_callback(timestamp, data, logconf):
     if 'pm.vbat' in data:
         global vbat
         vbat = data['pm.vbat']
-    #if 'stateEstimate.x' in data:
-    #    data["timestamp"] = timestamp
-    #    writer = csv.DictWriter(open('/home/guillermoga/flight_log.csv', 'a+', newline=''), fieldnames=["timestamp","stateEstimate.x","stateEstimate.y","stateEstimate.z"])
-    #    writer.writerow(data)
 
 def log_and_print_async_callback(timestamp, data, logconf):
     print('[%d]: %s' % (timestamp, data), file=f)
     print('[%d]: %s' % (timestamp, data))
 
 
-def position_control_callback(timestamp, data, logconf):
+def position_estimate_callback(timestamp, data, logconf):
     print('[%d]: %s' % (timestamp, data), file=f)
     position_x = data["stateEstimate.x"]
     position_y = data["stateEstimate.y"]
     position_z = data["stateEstimate.z"]
-    roll = data["stateEstimate.roll"]
-    pitch = data["stateEstimate.pitch"]
-    yaw = data["stateEstimate.yaw"]
     POSITION_X.append(position_x)
     POSITION_Y.append(position_y)
     POSITION_Z.append(position_z)
+
+def velocity_estimate_callback(timestamp, data, logconf):
+    print('[%d]: %s' % (timestamp, data), file=f)
+    velocity_x = data["stateEstimate.vx"]
+    velocity_y = data["stateEstimate.vy"]
+    velocity_z = data["stateEstimate.vz"]
+    VX.append(velocity_x)
+    VY.append(velocity_y)
+    VZ.append(velocity_z)
+
+def attitude_estimate_callback(timestamp, data, logconf):
+    print('[%d]: %s' % (timestamp, data), file=f)
+    roll = data["stateEstimate.roll"]
+    pitch = data["stateEstimate.pitch"]
+    yaw = data["stateEstimate.yaw"]
     ROLL.append(roll)
     PITCH.append(pitch)
     YAW.append(yaw)
 
-def command_control_callback(timestamp, data, logconf):
-    print('[%d]: %s' % (timestamp, data), file=f)
-    roll = data["controller.roll"]
-    pitch = data["controller.pitch"]
-    yaw = data["controller.yaw"]
-    CMD_ROLL.append(roll)
-    CMD_PITCH.append(pitch)
-    CMD_YAW.append(yaw)
-
-def command_pos_control_callback(timestamp, data, logconf):
+def position_control_callback(timestamp, data, logconf):
     print('[%d]: %s' % (timestamp, data), file=f)
     tar_x = data["posCtl.targetX"]
     tar_y = data["posCtl.targetY"]
@@ -413,6 +287,24 @@ def command_pos_control_callback(timestamp, data, logconf):
     TARGET_X.append(tar_x)
     TARGET_Y.append(tar_y)
     TARGET_Z.append(tar_z)
+
+def velocity_control_callback(timestamp, data, logconf):
+    print('[%d]: %s' % (timestamp, data), file=f)
+    tar_vx = data["posCtl.targetVX"]
+    tar_vy = data["posCtl.targetVY"]
+    tar_vz = data["posCtl.targetVZ"]
+    TARGET_VX.append(tar_vx)
+    TARGET_VY.append(tar_vy)
+    TARGET_VZ.append(tar_vz)
+
+def attitude_control_callback(timestamp, data, logconf):
+    print('[%d]: %s' % (timestamp, data), file=f)
+    roll = data["controller.roll"]
+    pitch = data["controller.pitch"]
+    yaw = data["controller.yaw"]
+    CMD_ROLL.append(roll)
+    CMD_PITCH.append(pitch)
+    CMD_YAW.append(yaw)
 
 def activate_high_level_commander(cf):
     cf.param.set_value('commander.enHighLevel', '1')
@@ -423,9 +315,9 @@ if __name__ == '__main__':
 
     # Set these to the position and yaw based on how your Crazyflie is placed
     # on the floor
-    initial_x = 0.0
-    initial_y = 0.0
-    initial_z = -0.3
+    initial_x = 0.05
+    initial_y = -0.1
+    initial_z = 0.1
     initial_yaw = 0  # In degrees
     # 0: positive X direction
     # 90: positive Y direction
@@ -433,65 +325,58 @@ if __name__ == '__main__':
     # 270: negative Y direction
 
     # define logging parameters
-    log_state = LogConfig(name='stateEstimate', period_in_ms=50)
-    log_state.add_variable('stateEstimate.x', 'float')
-    log_state.add_variable('stateEstimate.y', 'float')
-    log_state.add_variable('stateEstimate.z', 'float')
-    log_state.add_variable('stateEstimate.roll', 'float')
-    log_state.add_variable('stateEstimate.pitch', 'float')
-    log_state.add_variable('stateEstimate.yaw', 'float')
 
     log_vbat = LogConfig(name='pm', period_in_ms=500)
     log_vbat.add_variable('pm.vbat', 'float')
 
-    log_set = LogConfig(name='controller', period_in_ms=50)
-    log_set.add_variable('controller.roll', 'float') # these are setpoints!!!
-    log_set.add_variable('controller.pitch', 'float')
-    log_set.add_variable('controller.yaw', 'float')
+    log_pos_estimate = LogConfig(name='stateEstimate', period_in_ms=50)
+    log_pos_estimate.add_variable('stateEstimate.x', 'float')
+    log_pos_estimate.add_variable('stateEstimate.y', 'float')
+    log_pos_estimate.add_variable('stateEstimate.z', 'float')
 
-    #log_cmd = LogConfig(name='controller', period_in_ms=50)
-    #log_cmd.add_variable('controller.cmd_thrust', 'float')
-    #log_cmd.add_variable('controller.cmd_roll', 'float')
-    #log_cmd.add_variable('controller.cmd_pitch', 'float')
-    #log_cmd.add_variable('controller.cmd_yaw', 'float')
+    log_att_estimate = LogConfig(name='stateEstimate', period_in_ms=50)
+    log_att_estimate.add_variable('stateEstimate.roll', 'float')
+    log_att_estimate.add_variable('stateEstimate.pitch', 'float')
+    log_att_estimate.add_variable('stateEstimate.yaw', 'float')
 
-    #log_range1 = LogConfig(name='ranging', period_in_ms=50)
-    #log_range1.add_variable('ranging.distance0', 'float')
-    #log_range1.add_variable('ranging.distance1', 'float')
-    #log_range1.add_variable('ranging.distance2', 'float')
-    #log_range1.add_variable('ranging.distance3', 'float')
+    log_vel_estimate = LogConfig(name='stateEstimate', period_in_ms=50)
+    log_vel_estimate.add_variable('stateEstimate.vx', 'float')
+    log_vel_estimate.add_variable('stateEstimate.vy', 'float')
+    log_vel_estimate.add_variable('stateEstimate.vz', 'float')
 
-    #log_range2 = LogConfig(name='ranging', period_in_ms=50)
-    #log_range2.add_variable('ranging.distance4', 'float')
-    #log_range2.add_variable('ranging.distance5', 'float')
-    #log_range2.add_variable('ranging.distance6', 'float')
-    #log_range2.add_variable('ranging.distance7', 'float')
+    log_pos_ctrl = LogConfig(name='posCtl', period_in_ms=50)
+    log_pos_ctrl.add_variable('posCtl.targetX', 'float')
+    log_pos_ctrl.add_variable('posCtl.targetY', 'float')
+    log_pos_ctrl.add_variable('posCtl.targetZ', 'float')
 
-    log_pos_control = LogConfig(name='posCtl', period_in_ms=50)
-    log_pos_control.add_variable('posCtl.targetX', 'float')
-    log_pos_control.add_variable('posCtl.targetY', 'float')
-    log_pos_control.add_variable('posCtl.targetZ', 'float')
-    #log_pos_control.add_variable('posCtl.targetVX', 'float')
-    #log_pos_control.add_variable('posCtl.targetVY', 'float')
-    #log_pos_control.add_variable('posCtl.targetVZ', 'float')
+    log_att_ctrl = LogConfig(name='controller', period_in_ms=50)
+    log_att_ctrl.add_variable('controller.roll', 'float') # these are setpoints!!!
+    log_att_ctrl.add_variable('controller.pitch', 'float')
+    log_att_ctrl.add_variable('controller.yaw', 'float')
+
+    log_vel_ctrl = LogConfig(name='posCtl', period_in_ms=50)
+    log_vel_ctrl.add_variable('posCtl.targetVX', 'float')
+    log_vel_ctrl.add_variable('posCtl.targetVY', 'float')
+    log_vel_ctrl.add_variable('posCtl.targetVZ', 'float')
 
 
     with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
         with open('/home/guillermoga/static_log_' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.txt', 'w') as f:
-            print('Flight log' + datetime.now().strftime("%Y%m%d %H%M%S"), file=f)
+            print('Static log' + datetime.now().strftime("%Y%m%d %H%M%S"), file=f)
 
-            #log_async_setup(scf, log_state)
-            #log_async_setup(scf, log_set)
-            #log_async_setup(scf, log_cmd)
-            #log_async_setup(scf, log_range1)
-            #log_async_setup(scf, log_range2)
-            #log_async_setup(scf, log_pos_control)
-            scf.cf.log.add_config(log_state)
-            log_state.data_received_cb.add_callback(position_control_callback)
-            scf.cf.log.add_config(log_pos_control)
-            log_pos_control.data_received_cb.add_callback(command_pos_control_callback)
-            scf.cf.log.add_config(log_set)
-            log_set.data_received_cb.add_callback(command_control_callback)
+            scf.cf.log.add_config(log_pos_estimate)
+            log_pos_estimate.data_received_cb.add_callback(position_estimate_callback)
+            scf.cf.log.add_config(log_vel_estimate)
+            log_vel_estimate.data_received_cb.add_callback(velocity_estimate_callback)
+            scf.cf.log.add_config(log_att_estimate)
+            log_att_estimate.data_received_cb.add_callback(attitude_estimate_callback)
+            scf.cf.log.add_config(log_pos_ctrl)
+            log_pos_ctrl.data_received_cb.add_callback(position_control_callback)
+            scf.cf.log.add_config(log_vel_ctrl)
+            log_vel_ctrl.data_received_cb.add_callback(velocity_control_callback)
+            scf.cf.log.add_config(log_att_ctrl)
+            log_att_ctrl.data_received_cb.add_callback(attitude_control_callback)
+
 
             log_async_setup(scf, log_vbat)
             log_vbat.start()
@@ -505,57 +390,74 @@ if __name__ == '__main__':
 
             if (drone == 'Flapper'):
                 set_control_parameters_Bolt(scf)
-            elif (drone == 'FlapperRoadrunner'):
-                set_control_parameters_Roadrunner(scf)
-            elif (drone == 'CF'):
-                set_control_parameters_CF(scf)
+
 
             # reinitialize_controller(scf) # to load all new control parameters
 
             set_initial_position(scf, initial_x, initial_y, initial_z, initial_yaw)
             reset_estimator(scf)
 
-            log_state.start()
-            log_set.start()
-            #log_cmd.start()
-            #log_range1.start()
-            #log_range2.start()
-            log_pos_control.start()
+
+            log_pos_estimate.start()
+            log_vel_estimate.start()
+            log_att_estimate.start()
+            log_pos_ctrl.start()
+            log_vel_ctrl.start()
+            log_att_ctrl.start()
+
+
             print("Log has started")
-            time.sleep(40)
+            time.sleep(15)
             print("Log has finished")
 
-            log_state.stop()
-            log_set.stop()
-            #log_cmd.stop()
+        
             log_vbat.stop()
-            #log_range1.stop()
-            #log_range2.stop()
-            log_pos_control.stop()
-
-            fig, axs = plt.subplots(3, 2)
+            log_pos_estimate.stop()
+            log_vel_estimate.stop()
+            log_att_estimate.stop()
+            log_pos_ctrl.stop()
+            log_vel_ctrl.stop()
+            log_att_ctrl.stop()
+            
+            fig, axs = plt.subplots(3, 3)
             axs[0, 0].plot(POSITION_X)
-            axs[0, 0].plot(TARGET_X)
-            axs[0, 0].legend(["est", "cmd"])
+            #axs[0, 0].plot(TARGET_X)
+            #axs[0, 0].legend(["est", "cmd"])
             axs[0, 0].set_title("Position X")
             axs[1, 0].plot(POSITION_Y)
-            axs[1, 0].plot(TARGET_Y)
-            axs[1, 1].legend(["est", "cmd"])
+            #axs[1, 0].plot(TARGET_Y)
+            #axs[1, 0].legend(["est", "cmd"])
             axs[1, 0].set_title("Position Y")
             axs[2, 0].plot(POSITION_Z)
-            axs[2, 0].plot(TARGET_Z)
-            axs[2, 0].legend(["est", "cmd"])
+            #axs[2, 0].plot(TARGET_Z)
+            #axs[2, 0].legend(["est", "cmd"])
             axs[2, 0].set_title("Position Z")
             axs[0, 1].plot(PITCH)
-            axs[0, 1].plot(CMD_PITCH)
-            axs[0, 1].legend(["est", "cmd"])
+            #axs[0, 1].plot(CMD_PITCH)
+            #axs[0, 1].legend(["est", "cmd"])
             axs[0, 1].set_title("Pitch")
             axs[1, 1].plot(ROLL)
-            axs[1, 1].plot(CMD_ROLL)
-            axs[1, 1].legend(["est", "cmd"])
+            #axs[1, 1].plot(CMD_ROLL)
+            #axs[1, 1].legend(["est", "cmd"])
             axs[1, 1].set_title("Roll")
             axs[2, 1].plot(YAW)
-            axs[2, 1].plot(CMD_YAW)
-            axs[2, 1].legend(["est", "cmd"])
+            #axs[2, 1].plot(CMD_YAW)
+            #axs[2, 1].legend(["est", "cmd"])
             axs[2, 1].set_title("Yaw")
+            axs[0, 2].plot(VX)
+            #axs[0, 2].plot(TARGET_VX)
+            #axs[0, 2].legend(["est", "cmd"])
+            axs[0, 2].set_title("Velocity X")
+            axs[1, 2].plot(VY)
+            #axs[1, 2].plot(TARGET_VY)
+            #axs[1, 2].legend(["est", "cmd"])
+            axs[1, 2].set_title("Velocity Y")
+            axs[2, 2].plot(VZ)
+            #axs[2, 2].plot(TARGET_VZ)
+            #axs[2, 2].legend(["est", "cmd"])
+            axs[2, 2].set_title("Velocity Z")
             plt.show()
+
+
+
+
