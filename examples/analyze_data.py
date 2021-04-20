@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import csv
 
 
-create_scv = False
+create_scv = True
 
 # reading the data from the file
 
@@ -29,7 +29,7 @@ PITCH_TAR = []
 YAW_TAR = []
 
 
-txt_file = "gain_improving_20210409-143753"
+txt_file = "c"
 with open("/home/guillermoga/" + txt_file  + ".txt") as f:
     for line in f:
         values = line.split()
@@ -60,7 +60,7 @@ with open("/home/guillermoga/" + txt_file  + ".txt") as f:
                 YAW.append(float(yaw))
 
 
-            if "controller.roll" in line:
+            if "controller.roll" in line and ("controller.rollRate" not in line):
                 roll = values[1].replace(',', '')
                 pitch = values[3].replace(',', '')
                 yaw = values[5].replace('}', '')
@@ -83,13 +83,17 @@ with open("/home/guillermoga/" + txt_file  + ".txt") as f:
                 VX_TAR.append(float(vx))
                 VY_TAR.append(float(vy))
                 VZ_TAR.append(float(vz))
-                
+
+
+#print(len(X), len(Y), len(Z), len(VX), len(VY), len(VZ), len(ROLL), len(PITCH), len(YAW))
+#print(len(X_TAR), len(Y_TAR), len(Z_TAR), len(VX_TAR), len(VY_TAR), len(VZ_TAR), len(ROLL_TAR), len(PITCH_TAR), len(YAW_TAR))
+
 if create_scv:
-    with open("/home/guillermoga/Desktop/Tests/" + txt_file + ".csv", mode='w') as csv_file:
+    with open("/home/guillermoga/Desktop/csv_files/" + txt_file + ".csv", mode='w') as csv_file:
         writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-        for i in range(len(X)):
-            writer.writerow([X[i], Y[i], Z[i], VX[i], VY[i], VZ[i], ROLL[i], PITCH_TAR[i], YAW[i],
+        for i in range(len(X_TAR)):
+            writer.writerow([X[i], Y[i], Z[i], VX[i], VY[i], VZ[i], ROLL[i], PITCH[i], YAW[i],
                          X_TAR[i], Y_TAR[i], Z_TAR[i], VX_TAR[i], VY_TAR[i], VZ_TAR[i], ROLL_TAR[i], PITCH_TAR[i], YAW_TAR[i]])
 
 
@@ -159,7 +163,7 @@ for i in range(1,len(X)):
     VZ2.append(vz2)
 
 
-
+'''
 fig2, axs2 = plt.subplots(1, 3)
 axs2[0].plot(VX2)
 axs2[0].plot(VX)
@@ -176,6 +180,7 @@ axs2[2].plot(VZ)
 axs2[2].grid()
 axs2[2].legend(["calculated","measured"])
 axs2[2].set_title("Velocity Z")
+'''
 plt.show()
 
 
