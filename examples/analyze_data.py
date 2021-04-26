@@ -6,7 +6,6 @@ import csv
 
 
 create_scv = True
-
 # reading the data from the file
 
 X = []
@@ -29,8 +28,8 @@ PITCH_TAR = []
 YAW_TAR = []
 
 
-txt_file = "c"
-with open("/home/guillermoga/" + txt_file  + ".txt") as f:
+txt_file = "kalman_flight_20210426-144159"
+with open("/home/guillermoga/cyberzoo/" + txt_file  + ".txt") as f:
     for line in f:
         values = line.split()
         values.pop(0)
