@@ -163,18 +163,14 @@ sequence = [
     #    (0, 0, 0),
     #hover
     #(0, 0, h, 0),
-    (0, 0, h, 0),
-    (0, 0, h, 0),
-    (a, 0, h, 0),
-    (a, 0, h, 0),
-    (a, 0, h, 0),
-   # (a, a, h, 0),
-   # (a, a, h, 0),
-   # (0, a, h, 0),
-   # (0, a, h, 0),
-    (0, 0, h, 0),
-    (0, 0, h, 0),
-    (0, 0, 0.5*h, 0),
+    #(0, 0, h, 0),
+    (0, 0, h, 0, 3),
+    (a, 0, h, 0, 5),
+    #//(a, a, h, 0, 6),
+    #(0, a, h, 0, 6),
+    (0, 0, h, 0, 5),
+    (0, 0, h, 0, 1),
+    (0, 0, 0.5*h, 0, 2),
     #(0, 0, h),
     #(0, 0, h),
     #(0, 0, 0),
@@ -193,10 +189,10 @@ sequence = [
     #    (0, 0, 0),
 ]
 
-origin = [0, 0, -0.2]
+origin = [0, 0, 0.2]
 initial_x = 0
 initial_y = 0
-initial_z = -0.2
+initial_z = 0.2
 initial_yaw = 0  # In degrees
 landing_yaw = 0
 # 0: positive X direction
@@ -282,9 +278,9 @@ def set_control_parameters_Bolt(scf):
     scf.cf.param.set_value('posCtlPid.thrustMin', '15000')
 
     #POSITION
-    scf.cf.param.set_value('posCtlPid.xKp', '7.0') #4 6 test_good: 9.5
+    scf.cf.param.set_value('posCtlPid.xKp', '4.0') #4 6 test_good: 7
     scf.cf.param.set_value('posCtlPid.xKi', '0.0') #0 test_good: 0
-    scf.cf.param.set_value('posCtlPid.xKd', '1.0') #0   test_good 1.0
+    scf.cf.param.set_value('posCtlPid.xKd', '0.0') #0   test_good 1.0
     scf.cf.param.set_value('posCtlPid.yKp', '5.0') #2.5
     scf.cf.param.set_value('posCtlPid.yKi', '0.0') #0
     scf.cf.param.set_value('posCtlPid.yKd', '0.0') #0 
@@ -295,10 +291,10 @@ def set_control_parameters_Bolt(scf):
     scf.cf.param.set_value('posCtlPid.pLimit', '40.0') #25
 
     #VELOCITY
-    scf.cf.param.set_value('velCtlPid.vxKFF', '2.0') #0 tested: 0.7
-    scf.cf.param.set_value('velCtlPid.vxKp', '6.0') #4   tested: 6
-    scf.cf.param.set_value('velCtlPid.vxKi', '1.5') #0.5 tested:0.8
-    scf.cf.param.set_value('velCtlPid.vxKd', '0.1') #0 tested: 0.2
+    scf.cf.param.set_value('velCtlPid.vxKFF', '2.5') #0 tested: 2.0
+    scf.cf.param.set_value('velCtlPid.vxKp', '10.0') #4   tested: 6
+    scf.cf.param.set_value('velCtlPid.vxKi', '0.8') #0.5 tested:1.5
+    scf.cf.param.set_value('velCtlPid.vxKd', '0.1') #0 tested: 0.1
     scf.cf.param.set_value('velCtlPid.vyKFF', '2.0') #0
     scf.cf.param.set_value('velCtlPid.vyKp', '5.0') #4 tested:5
     scf.cf.param.set_value('velCtlPid.vyKi', '0.9') #0.5 tested: 0.9
@@ -314,9 +310,9 @@ def set_control_parameters_Bolt(scf):
 
     #PITCH, ROLL & YAW 
     scf.cf.param.set_value('pid_attitude.yawFeedForw', '0') #220
-    scf.cf.param.set_value('pid_attitude.pitch_kp', '15.0') #13  test_good:15
-    scf.cf.param.set_value('pid_attitude.pitch_ki', '12.5')  #0  test:12.5
-    scf.cf.param.set_value('pid_attitude.pitch_kd', '1.0')  #1    test:1 
+    scf.cf.param.set_value('pid_attitude.pitch_kp', '10.0') #13  test_good:15
+    scf.cf.param.set_value('pid_attitude.pitch_ki', '7.0')  #0  test:12.5
+    scf.cf.param.set_value('pid_attitude.pitch_kd', '2.0')  #1    test:1 
     scf.cf.param.set_value('pid_attitude.roll_kp', '10.0')  #15   test:10
     scf.cf.param.set_value('pid_attitude.roll_ki', '1.0')   #0    test:1
     scf.cf.param.set_value('pid_attitude.roll_kd', '0.5')   #1    test:0.2
@@ -325,7 +321,7 @@ def set_control_parameters_Bolt(scf):
     scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0')    #1    test:1
 
     #ATTITUDE RATES
-    scf.cf.param.set_value('pid_rate.pitch_kp', '60.0')  #70
+    scf.cf.param.set_value('pid_rate.pitch_kp', '70.0')  #70
     scf.cf.param.set_value('pid_rate.pitch_ki', '0')  
     scf.cf.param.set_value('pid_rate.pitch_kd', '0') 
     scf.cf.param.set_value('pid_rate.roll_kp', '50.0')  #50
@@ -664,6 +660,7 @@ if __name__ == '__main__':
 
             # unlock the engines
             # cf.commander.send_setpoint(0, 0, 0, 0)
+            #
             
             activate_high_level_commander(cf)
             time.sleep(0.2)
@@ -683,9 +680,10 @@ if __name__ == '__main__':
                 y = position[1] + initial_y
                 z = position[2] + initial_z
                 yaw = position[3]
+                t = position[4]
 
-                commander.go_to(x, y, z, yaw, 4)
-                time.sleep(4)
+                commander.go_to(x, y, z, yaw, t)
+                time.sleep(t)
 
 
 
@@ -696,7 +694,7 @@ if __name__ == '__main__':
             commander.stop()
             
             
-            #time.sleep(20)
+            #time.sleep(40)
             log_pos_estimate.stop()
             log_vel_estimate.stop()
             log_att_estimate.stop()
@@ -781,6 +779,12 @@ if __name__ == '__main__':
             axs2[2, 1].plot(D2)
             axs2[2, 1].grid()
             axs2[2, 1].set_title("Yaw aux")
+
+
+            plt.figure(3)
+            plt.plot(POSITION_X,POSITION_Y)
+            plt.grid()
+
     
 
             '''

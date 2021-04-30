@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import csv
 
 
-create_scv = True
+create_scv = False
 # reading the data from the file
 
 X = []
