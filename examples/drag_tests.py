@@ -47,6 +47,7 @@ from cflib.crazyflie import Crazyflie
 from cflib.crazyflie.log import LogConfig
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.crazyflie.syncLogger import SyncLogger
+from cflib.positioning.position_hl_commander import PositionHlCommander
 from datetime import datetime
 
 import threading as th
@@ -57,7 +58,7 @@ def key_capture_thread():
     input()
     kill_flight = True
 
-drone = 'CF'
+#drone = 'CF'
 # drone = 'FlapperRoadrunner'
 drone = 'Flapper'
 
@@ -74,130 +75,65 @@ else:
 # URI to the drone to connect to
 uri = 'radio://0/80/2M/' + address
 
-
-D0 = []
-D1 = []
-D2 = []
-ROLL = []
-PITCH = []
-YAW = []
 POSITION_X = []
 POSITION_Y = []
 POSITION_Z = []
-VX = []
-VY = []
-VZ = []
-
 TAR_X = []
 TAR_Y = []
 TAR_Z = []
+
+VX = []
+VY = []
+VZ = []
 TAR_VX = []
 TAR_VY = []
 TAR_VZ = []
+
+ROLL = []
+PITCH = []
+YAW = []
 TAR_ROLL = []
 TAR_PITCH = []
 TAR_YAW = []
 
-THRUST = []
-TAR_THRUST = []
+ROLL_RATE = []
+PITCH_RATE = []
+YAW_RATE = []
+TAR_ROLL_RATE = []
+TAR_PITCH_RATE = []
+TAR_YAW_RATE = []
+
 BATTERY = []
 
+THRUST = []
+TAR_THRUST = []
 
 
 # Change the sequence according to your setup
 #             x    y    z
 
-a = 2.5 #length of side
-h = 1.5 #height
+a = 6 #length of side
+h = 1.2 #height
 pi = 3.1416
 sequence = [
-    #square
-    #(0, 0, h),
-    #(a, 0, h),
-    #(a, a, h),
-    #(0, a, h),
-    #(0, 0, h),
-    #(0, 0, 0.3*h),
-    #(0 ,0 ,0),
-    #I-shape
-    #    (0, 0, h),
-    #    (0, a, h),
-    #    (a, a, h),
-    #    (a, -2*a, h),
-    #    (0, -2*a, h),
-    #    (0, -a, h),
-    #    (-a, -a, h),
-    #    (-a, -2*a, h),
-    #   (-2*a, -2*a, h),
-    #    (-2*a, a, h),
-    #    (-a, a, h),
-    #    (-a, 0, h),
-    #    (0, 0, h),
-    #    (0, 0, 0.5),
-    #    (0, 0, 0),
-    #Spiral
-    #    (0, 0, h),
-    #    (0, a, h),
-    #    (1.5*a, a, h),
-    #    (1.5*a, -2*a, h),
-    #    (-1.5*a, -2*a, h),
-    #    (-1.5*a, a, h),
-    #    (-a, a, h),
-    #    (-a, 0, h),
-    #    (0, 0, h),
-    #    (0, 0, 0.5),
-    #    (0, 0 ,0),
-    #hexagon
-    #    (0, 0, h),
-    #    (0.866*a, -0.5*a, h),
-    #    (0.866*a, -1.5*a, h),
-    #    (0, -2*a, h),
-    #    (-0.866*a, -1.5*a, h),
-    #    (-0.866*a, -0.5*a, h),
-    #    (0, 0, h),
-    #    (0, 0, 0.5),
-    #    (0, 0, 0),
-    #rhombus
-    #    (0, 0, h),
-    #    (-1.5*a, -1.5*a, h),
-    #    (0, -3*a, h),
-    #    (1.5*a, -1.5*a, h),
-    #    (0, 0, h),
-    #    (0, 0, 0.5),
-    #    (0, 0, 0),
-    #hover
-    #(0, 0, h, 0),
-    #(0, 0, h, 0),
-    (0, 0, h, 0, 4),
-    (a, 0, h, 0, 6),
-    (a, 0, 1.5*h, 0, 3),
-    (2*a, 0, 1.5*h, 0, 6),
-    (2*a, 0, 0.5*h, 0, 4),
-    #(a, a, h, 0, 6),
-    #(0, a, h, 0, 6),
-    #(0, 0, h, 0, 6),
+    #(0, 0, 0.5*h, 0),
+    (0, 0, h, 0.2),
+    (a, 0, h, 0.2),
+    #(0, 0, h, 0.4),
+   # (a, -a, h, 0, 5),
+   # (0, -a, h, 0, 5),
+   # (0, 0, h, 0, 5),
+    #(0, 0, 0.5*h, 0, 2),
     #(0, 0, h),
     #(0, 0, h),
     #(0, 0, 0),
-    #asterisk
-    #    (0, 0, h),'
-    #    (0, -a ,h),
-    #    (-a, a, h),
-    #    (a, 0, h),
-    #    (-a, -a, h),
-    #    (0, a, h),
-    #    (a, -a, h),
-    #    (-a, 0, h),
-    #    (a, a, h),
-    #    (0, 0, h),
-    #    (0, 0, 0.5),
-    #    (0, 0, 0),
 ]
 
-origin = [-3.9, 0, -0.2]
+origin = [-3.9, 0.4, 0.2]
+text_location = '/home/guillermoga/office/battery_hover_'
 initial_x = -3.9
-initial_y = 0
-initial_z = -0.2
+initial_y = 0.4
+initial_z = 0.2
 initial_yaw = 0  # In degrees
 landing_yaw = 0
 # 0: positive X direction
@@ -205,9 +141,13 @@ landing_yaw = 0
 # 180: negative X direction
 # 270: negative Y direction
 
+
+
+
+
 if (drone == 'Flapper') or (drone == 'FlapperRoadrunner'):
     # Setting for Nimble Flapper
-    hover_thrust = 40000
+    hover_thrust = 88920
 
 elif (drone == 'CF'):
     # Setting for CF2.1
@@ -263,8 +203,8 @@ def set_control_parameters_Bolt(scf):
 
     #Low pass filters
     scf.cf.param.set_value('attFilt.rateFiltEn', '1') #1
-    scf.cf.param.set_value('attFilt.omxFiltCut', '12.5') #12.5
-    scf.cf.param.set_value('attFilt.omyFiltCut', '5.0') #12.5
+    scf.cf.param.set_value('attFilt.omxFiltCut', '12.5') #12.5 
+    scf.cf.param.set_value('attFilt.omyFiltCut', '12.5') #12.5
     scf.cf.param.set_value('attFilt.omzFiltCut', '5.0') #5.0
     scf.cf.param.set_value('attFilt.attFiltEn', '0') #0
     scf.cf.param.set_value('attFilt.attFiltCut', '15.0') #15.0
@@ -272,44 +212,44 @@ def set_control_parameters_Bolt(scf):
     # # Double loop in-body control
     scf.cf.param.set_value('posCtlPid.singleLoop', '0')
     scf.cf.param.set_value('posVelFilt.posFiltEn', '0')
-    scf.cf.param.set_value('posVelFilt.posFiltCut', '5.0') #5
+    scf.cf.param.set_value('posVelFilt.posFiltCut', '5.0')
     scf.cf.param.set_value('posVelFilt.velFiltEn', '0')
-    scf.cf.param.set_value('posVelFilt.velFiltCut', '10.0') #10
-    scf.cf.param.set_value('posVelFilt.posZFiltEn', '1')  #0
-    scf.cf.param.set_value('posVelFilt.posZFiltCut', '5.0') #5
-    scf.cf.param.set_value('posVelFilt.velZFiltEn', '1')    #1
-    scf.cf.param.set_value('posVelFilt.velZFiltCut', '5.0') #10
+    scf.cf.param.set_value('posVelFilt.velFiltCut', '10.0')
+    scf.cf.param.set_value('posVelFilt.posZFiltEn', '0')
+    scf.cf.param.set_value('posVelFilt.posZFiltCut', '5.0')
+    scf.cf.param.set_value('posVelFilt.velZFiltEn', '1')
+    scf.cf.param.set_value('posVelFilt.velZFiltCut', '7.0')
     #scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
     scf.cf.param.set_value('posCtlPid.thrustMin', '15000')
 
     #POSITION
-    scf.cf.param.set_value('posCtlPid.xKp', '4.0') #4 6 test_good: 7
+    scf.cf.param.set_value('posCtlPid.xKp', '4.0') #4 6 test_good: 9.5
     scf.cf.param.set_value('posCtlPid.xKi', '0.0') #0 test_good: 0
     scf.cf.param.set_value('posCtlPid.xKd', '0.0') #0   test_good 1.0
     scf.cf.param.set_value('posCtlPid.yKp', '5.0') #2.5
-    scf.cf.param.set_value('posCtlPid.yKi', '0.0') #0
-    scf.cf.param.set_value('posCtlPid.yKd', '0.0') #0 
+    scf.cf.param.set_value('posCtlPid.yKi', '0') #0
+    scf.cf.param.set_value('posCtlPid.yKd', '0') #0 
     scf.cf.param.set_value('posCtlPid.zKp', '5.0') #5 
     scf.cf.param.set_value('posCtlPid.zKi', '0.5') #0.5
-    scf.cf.param.set_value('posCtlPid.zKd', '0') #0
+    scf.cf.param.set_value('posCtlPid.zKd', '0.2') #0
     scf.cf.param.set_value('posCtlPid.rLimit', '45.0') #25
     scf.cf.param.set_value('posCtlPid.pLimit', '40.0') #25
 
     #VELOCITY
-    scf.cf.param.set_value('velCtlPid.vxKFF', '2.5') #0 tested: 2.0
-    scf.cf.param.set_value('velCtlPid.vxKp', '10.0') #4   tested: 6
-    scf.cf.param.set_value('velCtlPid.vxKi', '0.8') #0.5 tested:1.5
-    scf.cf.param.set_value('velCtlPid.vxKd', '0.1') #0 tested: 0.1
+    scf.cf.param.set_value('velCtlPid.vxKFF', '2.0') #0 tested: 0.7
+    scf.cf.param.set_value('velCtlPid.vxKp', '12.0') #4   tested: 6
+    scf.cf.param.set_value('velCtlPid.vxKi', '0.8') #0.5 tested:0.8
+    scf.cf.param.set_value('velCtlPid.vxKd', '0') #0 tested: 0.2
     scf.cf.param.set_value('velCtlPid.vyKFF', '2.0') #0
-    scf.cf.param.set_value('velCtlPid.vyKp', '3.0') #4 tested:5
-    scf.cf.param.set_value('velCtlPid.vyKi', '0.5') #0.5 tested: 0.9
+    scf.cf.param.set_value('velCtlPid.vyKp', '5.0') #4 tested:5
+    scf.cf.param.set_value('velCtlPid.vyKi', '0.9') #0.5 tested: 0.9
     scf.cf.param.set_value('velCtlPid.vyKd', '0.2') #0  tested: 0.2
     scf.cf.param.set_value('velCtlPid.vzKp', '12.5') #12.5
     scf.cf.param.set_value('velCtlPid.vzKi', '5.0') #5
     scf.cf.param.set_value('velCtlPid.vzKd', '0.0') #0
 
     #MAX VELOCITIES
-    scf.cf.param.set_value('posCtlPid.xBodyVelMax', '1.0') #3
+    scf.cf.param.set_value('posCtlPid.xBodyVelMax', '1.5') #3
     scf.cf.param.set_value('posCtlPid.yBodyVelMax', '1.0') #3
     scf.cf.param.set_value('posCtlPid.zVelMax', '1.0') #3
 
@@ -318,15 +258,15 @@ def set_control_parameters_Bolt(scf):
     scf.cf.param.set_value('pid_attitude.pitch_kp', '10.0') #13  test_good:15
     scf.cf.param.set_value('pid_attitude.pitch_ki', '7.0')  #0  test:12.5
     scf.cf.param.set_value('pid_attitude.pitch_kd', '2.0')  #1    test:1 
-    scf.cf.param.set_value('pid_attitude.roll_kp', '7.0')  #15   test:10
-    scf.cf.param.set_value('pid_attitude.roll_ki', '0.5')   #0    test:1
-    scf.cf.param.set_value('pid_attitude.roll_kd', '0.2')   #1    test:0.2
+    scf.cf.param.set_value('pid_attitude.roll_kp', '10.0')  #15   test:10
+    scf.cf.param.set_value('pid_attitude.roll_ki', '1')   #0    test:1
+    scf.cf.param.set_value('pid_attitude.roll_kd', '0.5')   #1    test:0.2
     scf.cf.param.set_value('pid_attitude.yaw_kp', '45.0')   #30   test:45
-    scf.cf.param.set_value('pid_attitude.yaw_ki', '0')   #0    test:20
+    scf.cf.param.set_value('pid_attitude.yaw_ki', '0.0')   #0    test:20
     scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0')    #1    test:1
 
     #ATTITUDE RATES
-    scf.cf.param.set_value('pid_rate.pitch_kp', '70.0')  #70
+    scf.cf.param.set_value('pid_rate.pitch_kp', '80.0')  #70
     scf.cf.param.set_value('pid_rate.pitch_ki', '0')  
     scf.cf.param.set_value('pid_rate.pitch_kd', '0') 
     scf.cf.param.set_value('pid_rate.roll_kp', '50.0')  #50
@@ -388,27 +328,14 @@ def log_async_callback(timestamp, data, logconf):
         global vbat
         vbat = data['pm.vbat']
         BATTERY.append(vbat)
-    #if 'stateEstimate.x' in data:
-    #    data["timestamp"] = timestamp
-    #    writer = csv.DictWriter(open('/home/guillermoga/flight_log.csv', 'a+', newline=''), fieldnames=["timestamp","stateEstimate.x","stateEstimate.y","stateEstimate.z"])
-    #    writer.writerow(data)
 
 def log_and_print_async_callback(timestamp, data, logconf):
    # print('[%d]: %s' % (timestamp, data), file=f)
     print('[%d]: %s' % (timestamp, data))
 
 
-def attitude_estimate_callback(timestamp, data, logconf):
- #   print('[%d]: %s' % (timestamp, data), file=f)
-    roll = data["stateEstimate.roll"]
-    pitch = data["stateEstimate.pitch"]
-    yaw = data["stateEstimate.yaw"]
-    ROLL.append(roll)
-    PITCH.append(pitch)
-    YAW.append(yaw)
-
 def position_estimate_callback(timestamp, data, logconf):
-  #  print('[%d]: %s' % (timestamp, data), file=f)
+   # print('[%d]: %s' % (timestamp, data), file=f)
     position_x = data["stateEstimate.x"]
     position_y = data["stateEstimate.y"]
     position_z = data["stateEstimate.z"]
@@ -417,7 +344,7 @@ def position_estimate_callback(timestamp, data, logconf):
     POSITION_Z.append(position_z)
 
 def velocity_estimate_callback(timestamp, data, logconf):
-  #  print('[%d]: %s' % (timestamp, data), file=f)
+   # print('[%d]: %s' % (timestamp, data), file=f)
     velocity_x = data["stateEstimate.vx"]
     velocity_y = data["stateEstimate.vy"]
     velocity_z = data["stateEstimate.vz"]
@@ -425,8 +352,27 @@ def velocity_estimate_callback(timestamp, data, logconf):
     VY.append(velocity_y)
     VZ.append(velocity_z)
 
+def attitude_estimate_callback(timestamp, data, logconf):
+   # print('[%d]: %s' % (timestamp, data), file=f)
+    roll = data["stateEstimate.roll"]
+    pitch = data["stateEstimate.pitch"]
+    yaw = data["stateEstimate.yaw"]
+    ROLL.append(roll)
+    PITCH.append(pitch)
+    YAW.append(yaw)
+
+def attitude_rate_estimate_callback(timestamp, data, logconf):
+   # print('[%d]: %s' % (timestamp, data), file=f)
+    roll = data["stateEstimateZ.rateRoll"]
+    pitch = data["stateEstimateZ.ratePitch"]
+    yaw = data["stateEstimateZ.rateYaw"]
+    ROLL_RATE.append(roll)
+    PITCH_RATE.append(pitch)
+    YAW_RATE.append(yaw)
+
+
 def position_control_callback(timestamp, data, logconf):
- #   print('[%d]: %s' % (timestamp, data), file=f)
+  #  print('[%d]: %s' % (timestamp, data), file=f)
     tar_x = data["posCtl.targetX"]
     tar_y = data["posCtl.targetY"]
     tar_z = data["posCtl.targetZ"]
@@ -444,7 +390,7 @@ def velocity_control_callback(timestamp, data, logconf):
     TAR_VZ.append(tar_vz)
 
 def attitude_control_callback(timestamp, data, logconf):
- #   print('[%d]: %s' % (timestamp, data), file=f)
+  #  print('[%d]: %s' % (timestamp, data), file=f)
     roll = data["controller.roll"]
     pitch = data["controller.pitch"]
     yaw = data["controller.yaw"]
@@ -452,14 +398,14 @@ def attitude_control_callback(timestamp, data, logconf):
     TAR_PITCH.append(pitch)
     TAR_YAW.append(yaw)
 
-def compl_estimate_callback(timestamp, data, logconf):
-   # print('[%d]: %s' % (timestamp, data), file=f)
-    roll = data["stateEstimate.roll_compl"]
-    pitch = data["stateEstimate.pitch_compl"]
-    yaw = data["stateEstimate.yaw_compl"]
-    D0.append(roll)
-    D1.append(pitch)
-    D2.append(yaw)
+def attitude_rate_control_callback(timestamp, data, logconf):
+  #  print('[%d]: %s' % (timestamp, data), file=f)
+    roll = data["controller.rollRate"]
+    pitch = data["controller.pitchRate"]
+    yaw = data["controller.yawRate"]
+    TAR_ROLL_RATE.append(roll)
+    TAR_PITCH_RATE.append(pitch)
+    TAR_YAW_RATE.append(yaw)
 
 def thrust_callback(timestamp, data, logconf):
   #  print('[%d]: %s' % (timestamp, data), file=f)
@@ -467,57 +413,7 @@ def thrust_callback(timestamp, data, logconf):
     cmd_thrust = data["controller.cmd_thrust"]
     THRUST.append(thrust)
     TAR_THRUST.append(cmd_thrust)
-
-'''
-def quaternion_estimate_callback(timestamp, data, logconf):
-  #  print('[%d]: %s' % (timestamp, data), file=f)
-    qx = data["stateEstimate.qx"]
-    qy = data["stateEstimate.qy"]
-    qz = data["stateEstimate.qz"]
-    qw = data["stateEstimate.qw"]
-    QX.append(qx)
-    QY.append(qy)
-    QZ.append(qz)
-    QW.append(qw)
-
-def quaternionaux_estimate_callback(timestamp, data, logconf):
-  #  print('[%d]: %s' % (timestamp, data), file=f)
-    qx = data["stateEstimate.qx_aux"]
-    qy = data["stateEstimate.qy_aux"]
-    qz = data["stateEstimate.qz_aux"]
-    qw = data["stateEstimate.qw_aux"]
-    QX_A.append(qx)
-    QY_A.append(qy)
-    QZ_A.append(qz)
-    QW_A.append(qw)
-
-def quaternionmeasured_estimate_callback(timestamp, data, logconf):
-  #  print('[%d]: %s' % (timestamp, data), file=f)
-    qx = data["kalman.q1_aux"]
-    qy = data["kalman.q2_aux"]
-    qz = data["kalman.q3_aux"]
-    qw = data["kalman.q0_aux"]
-    QX_M.append(qx)
-    QY_M.append(qy)
-    QZ_M.append(qz)
-    QW_M.append(qw)
-
-def quaternionerror_estimate_callback(timestamp, data, logconf):
-  #  print('[%d]: %s' % (timestamp, data), file=f)
-    qx = data["kalman.q1"]
-    qy = data["kalman.q2"]
-    qz = data["kalman.q3"]
-    qw = data["kalman.q0"]
-    QX_E.append(qx)
-    QY_E.append(qy)
-    QZ_E.append(qz)
-    QW_E.append(qw)
-    '''
-
-
-def activate_high_level_commander(cf):
-    cf.param.set_value('commander.enHighLevel', '1')
-
+  
 
 if __name__ == '__main__':
     cflib.crtp.init_drivers(enable_debug_driver=False)
@@ -525,9 +421,10 @@ if __name__ == '__main__':
     # Set these to the position and yaw based on how your Crazyflie is placed
     # on the floor
 
+
     # define logging parameters
 
-    log_vbat = LogConfig(name='pm', period_in_ms=100)
+    log_vbat = LogConfig(name='pm', period_in_ms=20)
     log_vbat.add_variable('pm.vbat', 'float')
 
     log_pos_estimate = LogConfig(name='stateEstimate', period_in_ms=20)
@@ -545,6 +442,11 @@ if __name__ == '__main__':
     log_vel_estimate.add_variable('stateEstimate.vy', 'float')
     log_vel_estimate.add_variable('stateEstimate.vz', 'float')
 
+    log_att_rate_estimate = LogConfig(name='stateEstimateZ', period_in_ms=20)
+    log_att_rate_estimate.add_variable('stateEstimateZ.rateRoll', 'float') 
+    log_att_rate_estimate.add_variable('stateEstimateZ.ratePitch', 'float')
+    log_att_rate_estimate.add_variable('stateEstimateZ.rateYaw', 'float')
+
     log_pos_ctrl = LogConfig(name='posCtl', period_in_ms=20)
     log_pos_ctrl.add_variable('posCtl.targetX', 'float')
     log_pos_ctrl.add_variable('posCtl.targetY', 'float')
@@ -560,70 +462,20 @@ if __name__ == '__main__':
     log_vel_ctrl.add_variable('posCtl.targetVY', 'float')
     log_vel_ctrl.add_variable('posCtl.targetVZ', 'float')
 
-    log_compl_estimate = LogConfig(name='stateEstimate', period_in_ms=20)
-    log_compl_estimate.add_variable('stateEstimate.roll_compl', 'float')
-    log_compl_estimate.add_variable('stateEstimate.pitch_compl', 'float')
-    log_compl_estimate.add_variable('stateEstimate.yaw_compl', 'float')
-
     log_thrust = LogConfig(name= 'controller', period_in_ms=20)
     log_thrust.add_variable('controller.actuatorThrust', 'float')
     log_thrust.add_variable('controller.cmd_thrust', 'float')
-
+ 
     '''
-    log_att_estimate = LogConfig(name='stateEstimate', period_in_ms=50)
-    log_att_estimate.add_variable('stateEstimate.roll', 'float')
-    log_att_estimate.add_variable('stateEstimate.pitch', 'float')
-    log_att_estimate.add_variable('stateEstimate.yaw', 'float')
-
-    log_compl_estimate = LogConfig(name='stateEstimate', period_in_ms=50)
-    log_compl_estimate.add_variable('stateEstimate.roll_compl', 'float')
-    log_compl_estimate.add_variable('stateEstimate.pitch_compl', 'float')
-    log_compl_estimate.add_variable('stateEstimate.yaw_compl', 'float')
-
-    log_quaternion_estimate = LogConfig(name = "statEstimate", period_in_ms=50)
-    log_quaternion_estimate.add_variable('stateEstimate.qx', 'float')
-    log_quaternion_estimate.add_variable('stateEstimate.qy', 'float')
-    log_quaternion_estimate.add_variable('stateEstimate.qz', 'float')
-    log_quaternion_estimate.add_variable('stateEstimate.qw', 'float')
-
-    log_quaternionaux_estimate = LogConfig(name = "statEstimate", period_in_ms=50)
-    log_quaternionaux_estimate.add_variable('stateEstimate.qx_aux', 'float')
-    log_quaternionaux_estimate.add_variable('stateEstimate.qy_aux', 'float')
-    log_quaternionaux_estimate.add_variable('stateEstimate.qz_aux', 'float')
-    log_quaternionaux_estimate.add_variable('stateEstimate.qw_aux', 'float')
-
-    log_quaternionmeasured_estimate = LogConfig(name = "kalman", period_in_ms=50)
-    log_quaternionmeasured_estimate.add_variable('kalman.q0_aux', 'float')
-    log_quaternionmeasured_estimate.add_variable('kalman.q1_aux', 'float')
-    log_quaternionmeasured_estimate.add_variable('kalman.q2_aux', 'float')
-    log_quaternionmeasured_estimate.add_variable('kalman.q3_aux', 'float')
-
-    log_quaternionerror_estimate = LogConfig(name = "kalman", period_in_ms=50)
-    log_quaternionerror_estimate.add_variable('kalman.q0', 'float')
-    log_quaternionerror_estimate.add_variable('kalman.q1', 'float')
-    log_quaternionerror_estimate.add_variable('kalman.q2', 'float')
-    log_quaternionerror_estimate.add_variable('kalman.q3', 'float')
+    log_att_rate_ctrl = LogConfig(name='controller', period_in_ms=20)
+    log_att_rate_ctrl.add_variable('controller.rollRate', 'float') 
+    log_att_rate_ctrl.add_variable('controller.pitchRate', 'float')
+    log_att_rate_ctrl.add_variable('controller.yawRate', 'float')
     '''
-
 
     with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
-       # with open('/home/guillermoga/quaternions_static_' + datetime.now().strftime("%Y%m%d-%H%M%S") + '.txt', 'w') as f:
-       #     print('Flight log' + datetime.now().strftime("%Y%m%d %H%M%S"), file=f)
-
-            '''
-            scf.cf.log.add_config(log_att_estimate)
-            log_att_estimate.data_received_cb.add_callback(attitude_estimate_callback)
-            scf.cf.log.add_config(log_compl_estimate)
-            log_compl_estimate.data_received_cb.add_callback(compl_estimate_callback)
-            scf.cf.log.add_config(log_quaternion_estimate)
-            log_quaternion_estimate.data_received_cb.add_callback(quaternion_estimate_callback)
-            scf.cf.log.add_config(log_quaternionaux_estimate)
-            log_quaternionaux_estimate.data_received_cb.add_callback(quaternionaux_estimate_callback)
-            scf.cf.log.add_config(log_quaternionmeasured_estimate)
-            log_quaternionmeasured_estimate.data_received_cb.add_callback(quaternionmeasured_estimate_callback)
-            scf.cf.log.add_config(log_quaternionerror_estimate)
-            log_quaternionerror_estimate.data_received_cb.add_callback(quaternionerror_estimate_callback)
-            '''
+        #with open(text_location + datetime.now().strftime("%Y%m%d-%H%M%S") + '.txt', 'w') as f:
+         #   print('Flight log' + datetime.now().strftime("%Y%m%d %H%M%S"), file=f)
 
             scf.cf.log.add_config(log_pos_estimate)
             log_pos_estimate.data_received_cb.add_callback(position_estimate_callback)
@@ -637,18 +489,22 @@ if __name__ == '__main__':
             log_vel_ctrl.data_received_cb.add_callback(velocity_control_callback)
             scf.cf.log.add_config(log_att_ctrl)
             log_att_ctrl.data_received_cb.add_callback(attitude_control_callback)
-            scf.cf.log.add_config(log_compl_estimate)
-            log_compl_estimate.data_received_cb.add_callback(compl_estimate_callback)
             scf.cf.log.add_config(log_thrust)
             log_thrust.data_received_cb.add_callback(thrust_callback)
+            '''
+            scf.cf.log.add_config(log_att_rate_estimate)
+            log_att_rate_estimate.data_received_cb.add_callback(attitude_rate_estimate_callback)            
+            scf.cf.log.add_config(log_att_rate_ctrl)
+            log_att_rate_ctrl.data_received_cb.add_callback(attitude_rate_control_callback)
+            '''
 
             log_async_setup(scf, log_vbat)
             log_vbat.start()
 
-
             cf = scf.cf
 
             time.sleep(1)
+
             print('Battery voltage is {}' .format(vbat))
 
             reset_tumble_detector(scf)
@@ -657,6 +513,7 @@ if __name__ == '__main__':
                 set_control_parameters_Bolt(scf)
             elif (drone == 'CF'):
                 set_control_parameters_CF(scf)
+
 
             # reinitialize_controller(scf) # to load all new control parameters
 
@@ -669,73 +526,46 @@ if __name__ == '__main__':
             log_pos_ctrl.start()
             log_vel_ctrl.start()
             log_att_ctrl.start()
-            log_compl_estimate.start()
             log_thrust.start()
-
-            '''
-            log_quaternion_estimate.start()
-            log_quaternionaux_estimate.start()
-            log_quaternionmeasured_estimate.start()
-            log_quaternionerror_estimate.start()
-            '''
-            print("Start log")
+            #log_att_rate_estimate.start()
+            #log_att_rate_ctrl.start()
 
             # unlock the engines
             # cf.commander.send_setpoint(0, 0, 0, 0)
-            #
-            
-            activate_high_level_commander(cf)
-            time.sleep(0.2)
-            commander = cf.high_level_commander
-            
-            commander.takeoff(-0.5, 0.001) # setting the setpoint underground to spinup the motors before taking off
-            time.sleep(0.01)
-            commander.go_to(origin[0], origin[1], origin[2]-0.5, initial_yaw, 0.01) # (re)set the setpoint, sometimes xy stays at [0,0]
-            time.sleep(0.2)
-            commander.go_to(origin[0], origin[1], origin[2], initial_yaw, 1.5)
-            time.sleep(0.2)
 
-            for position in sequence:
-                print('Setting position {}'.format(position))
-                print('Battery voltage {}'.format(vbat))
+            print("Start log")
 
-                x = position[0] + initial_x
-                y = position[1] + initial_y
-                z = position[2] + initial_z
-                yaw = position[3]
-                t = position[4]
+            with PositionHlCommander(scf, x=initial_x, y=initial_y, z=initial_z, default_velocity=0.3, default_height=0, controller=PositionHlCommander.CONTROLLER_PID) as pc:
+                time.sleep(0.2)
+                pc.set_default_height(h)
+                for position in sequence:
+                    print('Setting position {}'.format(position))
+                    print('Battery voltage is {}' .format(vbat))
+                    x = position[0] 
+                    y = position[1] 
+                    z = position[2] 
+                    velocity = position[3]
+                    pc.go_to(x, y, velocity= velocity)
+                pc.set_default_velocity(0.2)
+                pc.set_default_height(0.5)
+                    
+        
 
-                commander.go_to(x, y, z, yaw, t)
-                time.sleep(t)
+            #cf.commander.send_stop_setpoint()
+            time.sleep(0.1)
 
-
-
-            #commander.go_to(initial_x, initial_y, initial_z, 0.0, 2)
-            #time.sleep(2.0)
-            commander.land(initial_z - 0.5, 3.0, yaw= landing_yaw)
-            time.sleep(3.0)
-            commander.stop()
-            
-            
-            #time.sleep(40)
+            log_vbat.stop()
             log_pos_estimate.stop()
             log_vel_estimate.stop()
             log_att_estimate.stop()
             log_pos_ctrl.stop()
             log_vel_ctrl.stop()
             log_att_ctrl.stop()
-            log_compl_estimate.stop()
-            log_thrust.stop
+            log_thrust.stop()
+            #log_att_rate_estimate.stop()
+            #log_att_rate_ctrl.stop()
 
-            '''
-            log_att_estimate.stop()
-            log_quaternion_estimate.stop()
-            log_quaternionaux_estimate.stop()
-            log_quaternionmeasured_estimate.stop()
-            log_quaternionerror_estimate.stop()
-            '''
             print("Finished log")
-
 
             fig, axs = plt.subplots(3, 3)
             axs[0, 0].plot(POSITION_X)
@@ -783,42 +613,10 @@ if __name__ == '__main__':
             axs[2, 2].grid()
             axs[2, 2].legend(["est", "cmd"])
             axs[2, 2].set_title("Yaw")
-            '''
-            fig2, axs2 = plt.subplots(3, 2)
-            axs2[0, 0].plot(ROLL)
-            axs2[0, 0].grid()
-            axs2[0, 0].set_title("Roll Kalman")
-            axs2[1, 0].plot(PITCH)
-            axs2[1, 0].grid()
-            axs2[1, 0].set_title("Pitch Kalman")
-            axs2[2, 0].plot(YAW)
-            axs2[2, 0].grid()
-            axs2[2, 0].set_title("Yaw Kalman")
-            axs2[0, 1].plot(D0)
-            axs2[0, 1].grid()
-            axs2[0, 1].set_title("Roll aux")
-            axs2[1, 1].plot(D1)
-            axs2[1, 1].grid()
-            axs2[1, 1].set_title("Pitch aux")
-            axs2[2, 1].plot(D2)
-            axs2[2, 1].grid()
-            axs2[2, 1].set_title("Yaw aux")
-            '''
-
-
-            #plt.figure(3)
-            #plt.plot(BATTERY)
-            #plt.grid()
 
             plt.figure(4)
             plt.plot(POSITION_X,POSITION_Y)
             plt.grid()
-
-            plt.figure(5)
-            plt.plot(THRUST)
-            plt.grid()
-
-    
 
             '''
             fig2, axs2 = plt.subplots(2,2)
@@ -842,32 +640,7 @@ if __name__ == '__main__':
             axs2[1, 1].grid()
             axs2[1, 1].legend(["main", "aux"]) 
             axs2[1 ,1].set_title("QZ")      
-
-            
-            #Measured for Kalman and estimate for kalman after error
-            fig3, axs3 = plt.subplots(2,2)
-            axs3[0, 0].plot(QW_M)
-            axs3[0, 0].plot(QW_E)
-            axs3[0, 0].grid()
-            axs3[0, 0].legend(["measured", "error"]) 
-            axs3[0 ,0].set_title("QW")
-            axs3[0, 1].plot(QX_M)
-            axs3[0, 1].plot(QX_E)
-            axs3[0, 1].grid()
-            axs3[0, 1].legend(["measured", "error"]) 
-            axs3[0 ,1].set_title("QX")  
-            axs3[1, 0].plot(QY_M)
-            axs3[1, 0].plot(QY_E)
-            axs3[1, 0].grid()
-            axs3[1, 0].legend(["measured", "error"]) 
-            axs3[1 ,0].set_title("QY") 
-            axs3[1, 1].plot(QZ_M)
-            axs3[1, 1].plot(QZ_E)
-            axs3[1, 1].grid()
-            axs3[1, 1].legend(["mesaured", "error"]) 
-            axs3[1 ,1].set_title("QE")     
             '''
             plt.show()
 
-       
 

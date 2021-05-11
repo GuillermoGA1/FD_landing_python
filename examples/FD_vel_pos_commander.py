@@ -77,32 +77,41 @@ uri = 'radio://0/80/2M/' + address
 POSITION_X = []
 POSITION_Y = []
 POSITION_Z = []
-TARGET_X = []
-TARGET_Y = []
-TARGET_Z = []
+TAR_X = []
+TAR_Y = []
+TAR_Z = []
+
 VX = []
 VY = []
 VZ = []
-TARGET_VX = []
-TARGET_VY = []
-TARGET_VZ = []
+TAR_VX = []
+TAR_VY = []
+TAR_VZ = []
+
 ROLL = []
 PITCH = []
 YAW = []
-CMD_ROLL = []
-CMD_PITCH = []
-CMD_YAW = []
+TAR_ROLL = []
+TAR_PITCH = []
+TAR_YAW = []
+
 ROLL_RATE = []
 PITCH_RATE = []
 YAW_RATE = []
-CMD_ROLL_RATE = []
-CMD_PITCH_RATE = []
-CMD_YAW_RATE = []
+TAR_ROLL_RATE = []
+TAR_PITCH_RATE = []
+TAR_YAW_RATE = []
+
+BATTERY = []
+
+THRUST = []
+TAR_THRUST = []
+
 # Change the sequence according to your setup
 #             x    y    z
 
-a = 1.5 #length of side
-h = 1.2 #height
+a = 2.5 #length of side
+h = 1.5 #height
 pi = 3.1416
 sequence = [
     #square
@@ -161,16 +170,14 @@ sequence = [
     #    (0, 0, 0),
     #hover
     #(0, 0, 0.5*h, 0),
-    (0, 0, h, 0),
-    (a, 0, h, 0),
-    (a, 0, h, 0),
-    (a, -a, h, 0),
-    (a, -a, h, 0),
-    (0, -a, h, 0),
-    (0, -a, h, 0),
-    (0, 0, h, 0),
-    (0, 0, h, 0),
-    (0, 0, 0.5*h, 0),
+    (0, 0, h, 0, 4),
+    (a, 0, h, 0, 6),
+    (a, 0, 1.5*h, 0, 3),
+    (2*a, 0, 1.5*h, 0, 6),
+    (2*a, 0, 0.5*h, 0, 4),
+   # (a, -a, h, 0, 5),
+   # (0, -a, h, 0, 5),
+   # (0, 0, h, 0, 5),
     #(0, 0, h),
     #(0, 0, h),
     #(0, 0, 0),
@@ -189,9 +196,9 @@ sequence = [
     #    (0, 0, 0),
 ]
 
-origin = [0, 0, -0.2]
-text_location = '/home/guillermoga/cyberzoo/kalman_flight_'
-initial_x = 0
+origin = [-3.9, 0, -0.2]
+text_location = '/home/guillermoga/cyberzoo/drag_test__'
+initial_x = -3.9
 initial_y = 0
 initial_z = -0.2
 initial_yaw = 0  # In degrees
@@ -279,13 +286,13 @@ def set_control_parameters_Bolt(scf):
     scf.cf.param.set_value('posVelFilt.posZFiltCut', '5.0')
     scf.cf.param.set_value('posVelFilt.velZFiltEn', '1')
     scf.cf.param.set_value('posVelFilt.velZFiltCut', '7.0')
-    scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
+    #scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
     scf.cf.param.set_value('posCtlPid.thrustMin', '15000')
 
     #POSITION
-    scf.cf.param.set_value('posCtlPid.xKp', '7.0') #4 6 test_good: 9.5
-    scf.cf.param.set_value('posCtlPid.xKi', '0') #0 test_good: 0
-    scf.cf.param.set_value('posCtlPid.xKd', '1.0') #0   test_good 1.0
+    scf.cf.param.set_value('posCtlPid.xKp', '4.0') #4 6 test_good: 9.5
+    scf.cf.param.set_value('posCtlPid.xKi', '0.0') #0 test_good: 0
+    scf.cf.param.set_value('posCtlPid.xKd', '0.0') #0   test_good 1.0
     scf.cf.param.set_value('posCtlPid.yKp', '5.0') #2.5
     scf.cf.param.set_value('posCtlPid.yKi', '0') #0
     scf.cf.param.set_value('posCtlPid.yKd', '0') #0 
@@ -297,8 +304,8 @@ def set_control_parameters_Bolt(scf):
 
     #VELOCITY
     scf.cf.param.set_value('velCtlPid.vxKFF', '2.0') #0 tested: 0.7
-    scf.cf.param.set_value('velCtlPid.vxKp', '6.0') #4   tested: 6
-    scf.cf.param.set_value('velCtlPid.vxKi', '1.5') #0.5 tested:0.8
+    scf.cf.param.set_value('velCtlPid.vxKp', '10.0') #4   tested: 6
+    scf.cf.param.set_value('velCtlPid.vxKi', '0.8') #0.5 tested:0.8
     scf.cf.param.set_value('velCtlPid.vxKd', '0.1') #0 tested: 0.2
     scf.cf.param.set_value('velCtlPid.vyKFF', '2.0') #0
     scf.cf.param.set_value('velCtlPid.vyKp', '5.0') #4 tested:5
@@ -315,9 +322,9 @@ def set_control_parameters_Bolt(scf):
 
     #PITCH, ROLL & YAW 
     scf.cf.param.set_value('pid_attitude.yawFeedForw', '0') #220
-    scf.cf.param.set_value('pid_attitude.pitch_kp', '15.0') #13  test_good:15
-    scf.cf.param.set_value('pid_attitude.pitch_ki', '12.5')  #0  test:12.5
-    scf.cf.param.set_value('pid_attitude.pitch_kd', '1.0')  #1    test:1 
+    scf.cf.param.set_value('pid_attitude.pitch_kp', '10.0') #13  test_good:15
+    scf.cf.param.set_value('pid_attitude.pitch_ki', '7.0')  #0  test:12.5
+    scf.cf.param.set_value('pid_attitude.pitch_kd', '2.0')  #1    test:1 
     scf.cf.param.set_value('pid_attitude.roll_kp', '10.0')  #15   test:10
     scf.cf.param.set_value('pid_attitude.roll_ki', '1')   #0    test:1
     scf.cf.param.set_value('pid_attitude.roll_kd', '0.5')   #1    test:0.2
@@ -326,7 +333,7 @@ def set_control_parameters_Bolt(scf):
     scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0')    #1    test:1
 
     #ATTITUDE RATES
-    scf.cf.param.set_value('pid_rate.pitch_kp', '60.0')  #70
+    scf.cf.param.set_value('pid_rate.pitch_kp', '70.0')  #70
     scf.cf.param.set_value('pid_rate.pitch_ki', '0')  
     scf.cf.param.set_value('pid_rate.pitch_kd', '0') 
     scf.cf.param.set_value('pid_rate.roll_kp', '50.0')  #50
@@ -387,6 +394,7 @@ def log_async_callback(timestamp, data, logconf):
     if 'pm.vbat' in data:
         global vbat
         vbat = data['pm.vbat']
+        BATTERY.append(vbat)
 
 def log_and_print_async_callback(timestamp, data, logconf):
     print('[%d]: %s' % (timestamp, data), file=f)
@@ -435,36 +443,44 @@ def position_control_callback(timestamp, data, logconf):
     tar_x = data["posCtl.targetX"]
     tar_y = data["posCtl.targetY"]
     tar_z = data["posCtl.targetZ"]
-    TARGET_X.append(tar_x)
-    TARGET_Y.append(tar_y)
-    TARGET_Z.append(tar_z)
+    TAR_X.append(tar_x)
+    TAR_Y.append(tar_y)
+    TAR_Z.append(tar_z)
 
 def velocity_control_callback(timestamp, data, logconf):
     print('[%d]: %s' % (timestamp, data), file=f)
     tar_vx = data["posCtl.targetVX"]
     tar_vy = data["posCtl.targetVY"]
     tar_vz = data["posCtl.targetVZ"]
-    TARGET_VX.append(tar_vx)
-    TARGET_VY.append(tar_vy)
-    TARGET_VZ.append(tar_vz)
+    TAR_VX.append(tar_vx)
+    TAR_VY.append(tar_vy)
+    TAR_VZ.append(tar_vz)
 
 def attitude_control_callback(timestamp, data, logconf):
     print('[%d]: %s' % (timestamp, data), file=f)
     roll = data["controller.roll"]
     pitch = data["controller.pitch"]
     yaw = data["controller.yaw"]
-    CMD_ROLL.append(roll)
-    CMD_PITCH.append(pitch)
-    CMD_YAW.append(yaw)
+    TAR_ROLL.append(roll)
+    TAR_PITCH.append(pitch)
+    TAR_YAW.append(yaw)
 
 def attitude_rate_control_callback(timestamp, data, logconf):
     print('[%d]: %s' % (timestamp, data), file=f)
     roll = data["controller.rollRate"]
     pitch = data["controller.pitchRate"]
     yaw = data["controller.yawRate"]
-    CMD_ROLL_RATE.append(roll)
-    CMD_PITCH_RATE.append(pitch)
-    CMD_YAW_RATE.append(yaw)
+    TAR_ROLL_RATE.append(roll)
+    TAR_PITCH_RATE.append(pitch)
+    TAR_YAW_RATE.append(yaw)
+
+def thrust_callback(timestamp, data, logconf):
+    print('[%d]: %s' % (timestamp, data), file=f)
+    thrust = data["controller.actuatorThrust"]
+    cmd_thrust = data["controller.cmd_thrust"]
+    THRUST.append(thrust)
+    TAR_THRUST.append(cmd_thrust)
+  
 
 def activate_high_level_commander(cf):
     cf.param.set_value('commander.enHighLevel', '1')
@@ -479,7 +495,7 @@ if __name__ == '__main__':
 
     # define logging parameters
 
-    log_vbat = LogConfig(name='pm', period_in_ms=500)
+    log_vbat = LogConfig(name='pm', period_in_ms=20)
     log_vbat.add_variable('pm.vbat', 'float')
 
     log_pos_estimate = LogConfig(name='stateEstimate', period_in_ms=20)
@@ -517,10 +533,18 @@ if __name__ == '__main__':
     log_vel_ctrl.add_variable('posCtl.targetVY', 'float')
     log_vel_ctrl.add_variable('posCtl.targetVZ', 'float')
 
+    log_thrust = LogConfig(name= 'controller', period_in_ms=20)
+    log_thrust.add_variable('controller.actuatorThrust', 'float')
+    log_thrust.add_variable('controller.cmd_thrust', 'float')
+ 
+    '''
     log_att_rate_ctrl = LogConfig(name='controller', period_in_ms=20)
     log_att_rate_ctrl.add_variable('controller.rollRate', 'float') 
     log_att_rate_ctrl.add_variable('controller.pitchRate', 'float')
     log_att_rate_ctrl.add_variable('controller.yawRate', 'float')
+    '''
+
+    
 
 
     with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
@@ -539,10 +563,14 @@ if __name__ == '__main__':
             log_vel_ctrl.data_received_cb.add_callback(velocity_control_callback)
             scf.cf.log.add_config(log_att_ctrl)
             log_att_ctrl.data_received_cb.add_callback(attitude_control_callback)
+            scf.cf.log.add_config(log_thrust)
+            log_thrust.data_received_cb.add_callback(thrust_callback)
+            '''
             scf.cf.log.add_config(log_att_rate_estimate)
             log_att_rate_estimate.data_received_cb.add_callback(attitude_rate_estimate_callback)            
             scf.cf.log.add_config(log_att_rate_ctrl)
             log_att_rate_ctrl.data_received_cb.add_callback(attitude_rate_control_callback)
+            '''
 
             log_async_setup(scf, log_vbat)
             log_vbat.start()
@@ -559,6 +587,7 @@ if __name__ == '__main__':
             elif (drone == 'CF'):
                 set_control_parameters_CF(scf)
 
+
             # reinitialize_controller(scf) # to load all new control parameters
 
             set_initial_position(scf, initial_x, initial_y, initial_z, initial_yaw)
@@ -570,11 +599,15 @@ if __name__ == '__main__':
             log_pos_ctrl.start()
             log_vel_ctrl.start()
             log_att_ctrl.start()
-            log_att_rate_estimate.start()
-            log_att_rate_ctrl.start()
+            log_thrust.start()
+            #log_att_rate_estimate.start()
+            #log_att_rate_ctrl.start()
 
             # unlock the engines
             # cf.commander.send_setpoint(0, 0, 0, 0)
+
+            print("Start log")
+
 
             activate_high_level_commander(cf)
             time.sleep(0.2)
@@ -587,18 +620,17 @@ if __name__ == '__main__':
             commander.go_to(origin[0], origin[1], origin[2], initial_yaw, 1.5)
             time.sleep(0.2)
 
+
             for position in sequence:
                 print('Setting position {}'.format(position))
-
+                print('Battery voltage {}' .format(vbat)) 
                 x = position[0] + initial_x
                 y = position[1] + initial_y
                 z = position[2] + initial_z
                 yaw = position[3]
-
-                commander.go_to(x, y, z, yaw, 4)
-                time.sleep(4)
-
-
+                t = position[4]
+                commander.go_to(x, y, z, yaw, t)
+                time.sleep(t)
 
             #commander.go_to(initial_x, initial_y, initial_z, 0.0, 2)
             #time.sleep(2.0)
@@ -613,69 +645,143 @@ if __name__ == '__main__':
             log_pos_ctrl.stop()
             log_vel_ctrl.stop()
             log_att_ctrl.stop()
-            log_att_rate_estimate.stop()
-            log_att_rate_ctrl.stop()
+            log_thrust.stop()
+            #log_att_rate_estimate.stop()
+            #log_att_rate_ctrl.stop()
 
-            fig, axs = plt.subplots(3, 4)
+            print("Finished log")
+
+            fig, axs = plt.subplots(3, 3)
             axs[0, 0].plot(POSITION_X)
-            axs[0, 0].plot(TARGET_X)
+            axs[0, 0].plot(TAR_X)
             axs[0, 0].grid()
             axs[0, 0].legend(["est", "cmd"])
             axs[0, 0].set_title("Position X")
             axs[1, 0].plot(POSITION_Y )
-            axs[1, 0].plot(TARGET_Y)
+            axs[1, 0].plot(TAR_Y)
             axs[1, 0].grid()
             axs[1, 0].legend(["est", "cmd"])
             axs[1, 0].set_title("Position Y")
             axs[2, 0].plot(POSITION_Z)
-            axs[2, 0].plot(TARGET_Z)
+            axs[2, 0].plot(TAR_Z)
             axs[2, 0].grid()
             axs[2, 0].legend(["est", "cmd"])
             axs[2, 0].set_title("Position Z")
             axs[0, 1].plot(VX)
-            axs[0, 1].plot(TARGET_VX)
+            axs[0, 1].plot(TAR_VX)
             axs[0, 1].grid()
             axs[0, 1].legend(["est", "cmd"])
             axs[0, 1].set_title("Velocity X")
             axs[1, 1].plot(VY)
-            axs[1, 1].plot(TARGET_VY)
+            axs[1, 1].plot(TAR_VY)
             axs[1, 1].grid()
             axs[1, 1].legend(["est", "cmd"])
             axs[1, 1].set_title("Velocity Y")
             axs[2, 1].plot(VZ)
-            axs[2, 1].plot(TARGET_VZ)
+            axs[2, 1].plot(TAR_VZ)
             axs[2, 1].grid()
             axs[2, 1].legend(["est", "cmd"])
             axs[2, 1].set_title("Velocity Z")
             axs[0, 2].plot(PITCH)
-            axs[0, 2].plot(CMD_PITCH)
+            axs[0, 2].plot(TAR_PITCH)
             axs[0, 2].grid()
             axs[0, 2].legend(["est", "cmd"])
             axs[0, 2].set_title("Pitch")
             axs[1, 2].plot(ROLL)
-            axs[1, 2].plot(CMD_ROLL)
+            axs[1, 2].plot(TAR_ROLL)
             axs[1, 2].grid()
             axs[1, 2].legend(["est", "cmd"])
             axs[1, 2].set_title("Roll")
             axs[2, 2].plot(YAW)
-            axs[2, 2].plot(CMD_YAW)
+            axs[2, 2].plot(TAR_YAW)
             axs[2, 2].grid()
             axs[2, 2].legend(["est", "cmd"])
             axs[2, 2].set_title("Yaw")
-            axs[0, 3].plot(PITCH_RATE)
-            axs[0, 3].plot(CMD_PITCH_RATE)
-            axs[0, 3].grid()
-            axs[0, 3].legend(["est","cmd"])
-            axs[0, 3].set_title("Pitch rate")
-            axs[1, 3].plot(ROLL_RATE)
-            axs[1, 3].plot(CMD_ROLL_RATE)
-            axs[1, 3].grid()
-            axs[1, 3].legend(["est", "cmd"])
-            axs[1, 3].set_title("Roll rate")
-            axs[2, 3].plot(YAW_RATE)
-            axs[2, 3].plot(CMD_YAW_RATE)
-            axs[2, 3].grid()
-            axs[2, 3].legend(["est","cmd"])
-            axs[2, 3].set_title("Yaw rate")
+
+            '''
+            fig2, axs2 = plt.subplots(3, 2)
+            axs2[0, 0].plot(ROLL)
+            axs2[0, 0].grid()
+            axs2[0, 0].set_title("Roll Kalman")
+            axs2[1, 0].plot(PITCH)
+            axs2[1, 0].grid()
+            axs2[1, 0].set_title("Pitch Kalman")
+            axs2[2, 0].plot(YAW)
+            axs2[2, 0].grid()
+            axs2[2, 0].set_title("Yaw Kalman")
+            axs2[0, 1].plot(D0)
+            axs2[0, 1].grid()
+            axs2[0, 1].set_title("Roll aux")
+            axs2[1, 1].plot(D1)
+            axs2[1, 1].grid()
+            axs2[1, 1].set_title("Pitch aux")
+            axs2[2, 1].plot(D2)
+            axs2[2, 1].grid()
+            axs2[2, 1].set_title("Yaw aux")
+            '''
+
+            plt.figure(3)
+            plt.plot(BATTERY)
+            #plt.plot(POSITION_X,POSITION_Y)
+            plt.grid()
+
+            plt.figure(4)
+            plt.plot(POSITION_X,POSITION_Y)
+            plt.grid()
+
+            plt.figure(5)
+            plt.plot(THRUST)
+            plt.plot(TAR_THRUST)
+            plt.grid()
+            plt.legend(["est", "cmd"])
+
+            '''
+            fig2, axs2 = plt.subplots(2,2)
+            axs2[0, 0].plot(QW)
+            axs2[0, 0].plot(QW_A)
+            axs2[0, 0].grid()
+            axs2[0, 0].legend(["main", "aux"]) 
+            axs2[0 ,0].set_title("QW")
+            axs2[0, 1].plot(QX)
+            axs2[0, 1].plot(QX_A)
+            axs2[0, 1].grid()
+            axs2[0, 1].legend(["main", "aux"]) 
+            axs2[0 ,1].set_title("QX")  
+            axs2[1, 0].plot(QY)
+            axs2[1, 0].plot(QY_A)
+            axs2[1, 0].grid()
+            axs2[1, 0].legend(["main", "aux"]) 
+            axs2[1 ,0].set_title("QY") 
+            axs2[1, 1].plot(QZ)
+            axs2[1, 1].plot(QZ_A)
+            axs2[1, 1].grid()
+            axs2[1, 1].legend(["main", "aux"]) 
+            axs2[1 ,1].set_title("QZ")      
+
+            
+            #Measured for Kalman and estimate for kalman after error
+            fig3, axs3 = plt.subplots(2,2)
+            axs3[0, 0].plot(QW_M)
+            axs3[0, 0].plot(QW_E)
+            axs3[0, 0].grid()
+            axs3[0, 0].legend(["measured", "error"]) 
+            axs3[0 ,0].set_title("QW")
+            axs3[0, 1].plot(QX_M)
+            axs3[0, 1].plot(QX_E)
+            axs3[0, 1].grid()
+            axs3[0, 1].legend(["measured", "error"]) 
+            axs3[0 ,1].set_title("QX")  
+            axs3[1, 0].plot(QY_M)
+            axs3[1, 0].plot(QY_E)
+            axs3[1, 0].grid()
+            axs3[1, 0].legend(["measured", "error"]) 
+            axs3[1 ,0].set_title("QY") 
+            axs3[1, 1].plot(QZ_M)
+            axs3[1, 1].plot(QZ_E)
+            axs3[1, 1].grid()
+            axs3[1, 1].legend(["mesaured", "error"]) 
+            axs3[1 ,1].set_title("QE")     
+            '''
             plt.show()
+
 

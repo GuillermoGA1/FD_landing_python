@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import csv
 
 
-create_scv = False
+create_scv = True
 # reading the data from the file
 
 X = []
@@ -26,74 +26,90 @@ YAW = []
 ROLL_TAR = []
 PITCH_TAR = []
 YAW_TAR = []
+THRUST = []
+THRUST_TAR = []
+BATTERY = []
 
 
-txt_file = "kalman_flight_20210426-144159"
-with open("/home/guillermoga/cyberzoo/" + txt_file  + ".txt") as f:
+txt_file = "battery_hover_20210506-132057"
+with open("/home/guillermoga/office/" + txt_file  + ".txt") as f:
     for line in f:
         values = line.split()
         values.pop(0)
-        if "pm.vbat" not in line:
-            if "stateEstimate.x" in line:
-                x = values[1].replace(',', '')
-                y = values[3].replace(',', '')
-                z = values[5].replace('}', '')
-                X.append(float(x))
-                Y.append(float(y))
-                Z.append(float(z))
+        if "stateEstimate.x" in line:
+            x = values[1].replace(',', '')
+            y = values[3].replace(',', '')
+            z = values[5].replace('}', '')
+            X.append(float(x))
+            Y.append(float(y))
+            Z.append(float(z))
 
-            if "stateEstimate.vx" in line:
-                vx = values[1].replace(',', '')
-                vy = values[3].replace(',', '')
-                vz = values[5].replace('}', '')
-                VX.append(float(vx))
-                VY.append(float(vy))
-                VZ.append(float(vz))
+        if "stateEstimate.vx" in line:
+            vx = values[1].replace(',', '')
+            vy = values[3].replace(',', '')
+            vz = values[5].replace('}', '')
+            VX.append(float(vx))
+            VY.append(float(vy))
+            VZ.append(float(vz))
 
-            if "stateEstimate.roll" in line:
-                roll = values[1].replace(',', '')
-                pitch = values[3].replace(',', '')
-                yaw = values[5].replace('}', '')
-                ROLL.append(float(roll))
-                PITCH.append(float(pitch))
-                YAW.append(float(yaw))
-
-
-            if "controller.roll" in line and ("controller.rollRate" not in line):
-                roll = values[1].replace(',', '')
-                pitch = values[3].replace(',', '')
-                yaw = values[5].replace('}', '')
-                ROLL_TAR.append(float(roll))
-                PITCH_TAR.append(float(pitch))
-                YAW_TAR.append(float(yaw))
-
-            if "posCtl.targetX" in line: #posCtl.targetX or ctrltarget.x
-                x = values[1].replace(',', '')
-                y = values[3].replace(',', '')
-                z = values[5].replace('}', '')
-                X_TAR.append(float(x))
-                Y_TAR.append(float(y))
-                Z_TAR.append(float(z))
-
-            if "posCtl.targetVX" in line: #posCtl.targetX or ctrltarget.x
-                vx = values[1].replace(',', '')
-                vy = values[3].replace(',', '')
-                vz = values[5].replace('}', '')
-                VX_TAR.append(float(vx))
-                VY_TAR.append(float(vy))
-                VZ_TAR.append(float(vz))
+        if "stateEstimate.roll" in line:
+            roll = values[1].replace(',', '')
+            pitch = values[3].replace(',', '')
+            yaw = values[5].replace('}', '')
+            ROLL.append(float(roll))
+            PITCH.append(float(pitch))
+            YAW.append(float(yaw))
 
 
-#print(len(X), len(Y), len(Z), len(VX), len(VY), len(VZ), len(ROLL), len(PITCH), len(YAW))
-#print(len(X_TAR), len(Y_TAR), len(Z_TAR), len(VX_TAR), len(VY_TAR), len(VZ_TAR), len(ROLL_TAR), len(PITCH_TAR), len(YAW_TAR))
+        if "controller.roll" in line and ("controller.rollRate" not in line):
+            roll = values[1].replace(',', '')
+            pitch = values[3].replace(',', '')
+            yaw = values[5].replace('}', '')
+            ROLL_TAR.append(float(roll))
+            PITCH_TAR.append(float(pitch))
+            YAW_TAR.append(float(yaw))
+
+        if "posCtl.targetX" in line: #posCtl.targetX or ctrltarget.x
+            x = values[1].replace(',', '')
+            y = values[3].replace(',', '')
+            z = values[5].replace('}', '')
+            X_TAR.append(float(x))
+            Y_TAR.append(float(y))
+            Z_TAR.append(float(z))
+
+        if "posCtl.targetVX" in line: #posCtl.targetX or ctrltarget.x
+            vx = values[1].replace(',', '')
+            vy = values[3].replace(',', '')
+            vz = values[5].replace('}', '')
+            VX_TAR.append(float(vx))
+            VY_TAR.append(float(vy))
+            VZ_TAR.append(float(vz))
+        
+        if "controller.actuatorThrust" in line:
+            thrust = values[1].replace(',', '')
+            thrust_tar = values[3].replace('}', '')
+            THRUST.append(float(thrust))
+            THRUST_TAR.append(float(thrust_tar))
+
+        if "pm.vbat" in line:
+            voltage = values[1].replace('}', '')
+            BATTERY.append(float(voltage))
+
+
+print(len(X), len(Y), len(Z), len(VX), len(VY), len(VZ), len(ROLL), len(PITCH), len(YAW))
+print(len(X_TAR), len(Y_TAR), len(Z_TAR), len(VX_TAR), len(VY_TAR), len(VZ_TAR), len(ROLL_TAR), len(PITCH_TAR), len(YAW_TAR))
+print(len(THRUST),len(BATTERY))
 
 if create_scv:
     with open("/home/guillermoga/Desktop/csv_files/" + txt_file + ".csv", mode='w') as csv_file:
         writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(["X", "Y", "Z", "VX", "VY", "VZ", "Roll", "Pitch", "Yaw", "Target X", "Target Y", "Target Z", "Target VX", "Target VY",
+                        "Target VZ", "Target Roll", "Target Pitch", "Target Yaw", "Thrust", "Target Thrust", "Battery"])
 
         for i in range(len(X_TAR)):
-            writer.writerow([X[i], Y[i], Z[i], VX[i], VY[i], VZ[i], ROLL[i], PITCH[i], YAW[i],
-                         X_TAR[i], Y_TAR[i], Z_TAR[i], VX_TAR[i], VY_TAR[i], VZ_TAR[i], ROLL_TAR[i], PITCH_TAR[i], YAW_TAR[i]])
+            writer.writerow([X[i], Y[i], Z[i], VX[i], VY[i], VZ[i], ROLL[i], PITCH[i], YAW[i], X_TAR[i], Y_TAR[i], Z_TAR[i],
+                          VX_TAR[i], VY_TAR[i], VZ_TAR[i], ROLL_TAR[i], PITCH_TAR[i], YAW_TAR[i], THRUST[i],THRUST_TAR[i], BATTERY[i]])
+                         
 
 
 
@@ -160,6 +176,24 @@ for i in range(1,len(Y)):
 for i in range(1,len(X)):
     vz2 = (Z[i] - Z[i-1])/ 0.05
     VZ2.append(vz2)
+
+
+plt.figure(3)
+plt.plot(BATTERY)          
+plt.grid()
+
+plt.figure(4)
+plt.plot(X, Y)
+plt.grid()
+
+plt.figure(5)
+plt.plot(THRUST)
+plt.plot(THRUST_TAR)
+plt.grid()
+plt.legend(["est", "cmd"])
+
+plt.figure(6)
+plt.scatter(BATTERY, THRUST)
 
 
 '''
