@@ -106,101 +106,69 @@ BATTERY = []
 
 THRUST = []
 TAR_THRUST = []
+THRUST_BASE = []
 
 # Change the sequence according to your setup
 #             x    y    z
 
-a = 2.5 #length of side
-h = 1.5 #height
+a = 1 #length of side
+h = 1 #height
 pi = 3.1416
 sequence = [
-    #square
-    #(0, 0, h),
-    #(a, 0, h),
-    #(a, a, h),
-    #(0, a, h),
-    #(0, 0, h),
-    #(0, 0, 0.3*h),
-    #(0 ,0 ,0),
-    #I-shape
-    #    (0, 0, h),
-    #    (0, a, h),
-    #    (a, a, h),
-    #    (a, -2*a, h),
-    #    (0, -2*a, h),
-    #    (0, -a, h),
-    #    (-a, -a, h),
-    #    (-a, -2*a, h),
-    #   (-2*a, -2*a, h),
-    #    (-2*a, a, h),
-    #    (-a, a, h),
-    #    (-a, 0, h),
-    #    (0, 0, h),
-    #    (0, 0, 0.5),
-    #    (0, 0, 0),
-    #Spiral
-    #    (0, 0, h),
-    #    (0, a, h),
-    #    (1.5*a, a, h),
-    #    (1.5*a, -2*a, h),
-    #    (-1.5*a, -2*a, h),
-    #    (-1.5*a, a, h),
-    #    (-a, a, h),
-    #    (-a, 0, h),
-    #    (0, 0, h),
-    #    (0, 0, 0.5),
-    #    (0, 0 ,0),
-    #hexagon
-    #    (0, 0, h),
-    #    (0.866*a, -0.5*a, h),
-    #    (0.866*a, -1.5*a, h),
-    #    (0, -2*a, h),
-    #    (-0.866*a, -1.5*a, h),
-    #    (-0.866*a, -0.5*a, h),
-    #    (0, 0, h),
-    #    (0, 0, 0.5),
-    #    (0, 0, 0),
-    #rhombus
-    #    (0, 0, h),
-    #    (-1.5*a, -1.5*a, h),
-    #    (0, -3*a, h),
-    #    (1.5*a, -1.5*a, h),
-    #    (0, 0, h),
-    #    (0, 0, 0.5),
-    #    (0, 0, 0),
+
     #hover
-    #(0, 0, 0.5*h, 0),
-    (0, 0, h, 0, 4),
-    (a, 0, h, 0, 6),
-    (a, 0, 1.5*h, 0, 3),
-    (2*a, 0, 1.5*h, 0, 6),
-    (2*a, 0, 0.5*h, 0, 4),
-   # (a, -a, h, 0, 5),
-   # (0, -a, h, 0, 5),
-   # (0, 0, h, 0, 5),
-    #(0, 0, h),
-    #(0, 0, h),
-    #(0, 0, 0),
-    #asterisk
-    #    (0, 0, h),'
-    #    (0, -a ,h),
-    #    (-a, a, h),
-    #    (a, 0, h),
-    #    (-a, -a, h),
-    #    (0, a, h),
-    #    (a, -a, h),
-    #    (-a, 0, h),
-    #    (a, a, h),
-    #    (0, 0, h),
-    #    (0, 0, 0.5),
-    #    (0, 0, 0),
+    #(0, 0, 0.5*h, 0)
+    #(0, 0, h, 0, 6),
+    #(a, 0, h, 0, 6),
+    #(0, 0, h, 0, 6),
+    #(0, a, h, 0, 6),
+    #(0, 0, h, 0, 6),
+    #(a, 0, 1.5*h, 0, 7),
+    #(0, 0, h, 0, 7),
+    #(0, a, 1.5*h, 0, 7),
+    #(0, 0, h, 0, 7),
+    #(0, 0, 1.5*h, 0, 6),
+    #(0, 0, h, 0, 3),
+    
+    #(a, 0, h, 0, 12),
+    #(0, 0, h, 0, 12),
+    #(0, a, h, 0, 12),
+    #(0, 0, h, 0, 12),
+    #(0, 0, 2*h, 0, 12),
+    #(0 ,0, h, 0, 12),
+    #(a, 0, 1.5*h, 0, 12),
+    #(0, 0, h, 0, 12),
+    #(0, a, 1.5*h, 0, 12),
+    #(0, 0, h, 0, 12),
+    
+    #(a, 0, h, 0, 12),
+    #(0, 0, h, 0, 12),
+    #(0, a, h, 0, 12),
+    #(0, 0, h, 0, 12),
+
+    (0, 0, 2*h, 0, 12),
+    #(0, 0, 2*h, 0, 3),
+    (0, 0, h, 0, 5),
+
+    #(0, 0, 0.8*h, 0, 4),
+ 
+
+     
+    #Previous cz battery
+    #(a, 0, 1.5*h, 0, 6),
+    #(a, 0, 2*h, 0, 6),
+    #(a, 0, 3*h, 0, 6),
+    #(0, 0, 2*h, 0, 10),
+    #(0, 0, 1.5*h, 0, 6),
+    #(0, 0, 0.6*h, 0, 6),
+
 ]
 
-origin = [-3.9, 0, -0.2]
-text_location = '/home/guillermoga/cyberzoo/drag_test__'
-initial_x = -3.9
+origin = [0, 0, 0]
+text_location = '/home/guillermoga/validation/z_raw_step1_'
+initial_x = 0
 initial_y = 0
-initial_z = -0.2
+initial_z = 0
 initial_yaw = 0  # In degrees
 landing_yaw = 0
 # 0: positive X direction
@@ -271,54 +239,54 @@ def set_control_parameters_Bolt(scf):
     #Low pass filters
     scf.cf.param.set_value('attFilt.rateFiltEn', '1') #1
     scf.cf.param.set_value('attFilt.omxFiltCut', '12.5') #12.5 
-    scf.cf.param.set_value('attFilt.omyFiltCut', '12.5') #12.5
+    scf.cf.param.set_value('attFilt.omyFiltCut', '5.0') #12.5
     scf.cf.param.set_value('attFilt.omzFiltCut', '5.0') #5.0
     scf.cf.param.set_value('attFilt.attFiltEn', '0') #0
     scf.cf.param.set_value('attFilt.attFiltCut', '15.0') #15.0
 
     # # Double loop in-body control
-    scf.cf.param.set_value('posCtlPid.singleLoop', '0')
-    scf.cf.param.set_value('posVelFilt.posFiltEn', '0')
+    #scf.cf.param.set_value('posCtlPid.singleLoop', '0')
+    scf.cf.param.set_value('posVelFilt.posFiltEn', '1')
     scf.cf.param.set_value('posVelFilt.posFiltCut', '5.0')
-    scf.cf.param.set_value('posVelFilt.velFiltEn', '0')
+    scf.cf.param.set_value('posVelFilt.velFiltEn', '1')
     scf.cf.param.set_value('posVelFilt.velFiltCut', '10.0')
-    scf.cf.param.set_value('posVelFilt.posZFiltEn', '0')
+    scf.cf.param.set_value('posVelFilt.posZFiltEn', '1')
     scf.cf.param.set_value('posVelFilt.posZFiltCut', '5.0')
     scf.cf.param.set_value('posVelFilt.velZFiltEn', '1')
-    scf.cf.param.set_value('posVelFilt.velZFiltCut', '7.0')
-    #scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
+    scf.cf.param.set_value('posVelFilt.velZFiltCut', '5.0')
+    scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
     scf.cf.param.set_value('posCtlPid.thrustMin', '15000')
 
     #POSITION
-    scf.cf.param.set_value('posCtlPid.xKp', '4.0') #4 6 test_good: 9.5
+    scf.cf.param.set_value('posCtlPid.xKp', '4.0') #4 6 test_good: 9.5    IT IS 4 FOR SMALL STEP INPUTS
     scf.cf.param.set_value('posCtlPid.xKi', '0.0') #0 test_good: 0
     scf.cf.param.set_value('posCtlPid.xKd', '0.0') #0   test_good 1.0
-    scf.cf.param.set_value('posCtlPid.yKp', '5.0') #2.5
+    scf.cf.param.set_value('posCtlPid.yKp', '3.0') #2.5         IT IS 3 FOR SMALL STEP INPUTS
     scf.cf.param.set_value('posCtlPid.yKi', '0') #0
     scf.cf.param.set_value('posCtlPid.yKd', '0') #0 
     scf.cf.param.set_value('posCtlPid.zKp', '5.0') #5 
     scf.cf.param.set_value('posCtlPid.zKi', '0.5') #0.5
-    scf.cf.param.set_value('posCtlPid.zKd', '0.2') #0
+    scf.cf.param.set_value('posCtlPid.zKd', '0.0') #0.2
     scf.cf.param.set_value('posCtlPid.rLimit', '45.0') #25
     scf.cf.param.set_value('posCtlPid.pLimit', '40.0') #25
 
     #VELOCITY
-    scf.cf.param.set_value('velCtlPid.vxKFF', '2.0') #0 tested: 0.7
-    scf.cf.param.set_value('velCtlPid.vxKp', '10.0') #4   tested: 6
-    scf.cf.param.set_value('velCtlPid.vxKi', '0.8') #0.5 tested:0.8
-    scf.cf.param.set_value('velCtlPid.vxKd', '0.1') #0 tested: 0.2
-    scf.cf.param.set_value('velCtlPid.vyKFF', '2.0') #0
+    scf.cf.param.set_value('velCtlPid.vxKFF', '1.0') #0 tested: 0.7
+    scf.cf.param.set_value('velCtlPid.vxKp', '4.0') #4   tested: 6
+    scf.cf.param.set_value('velCtlPid.vxKi', '0.9') #0.5 tested:0.8
+    scf.cf.param.set_value('velCtlPid.vxKd', '0.5') #0 tested: 0.2
+    scf.cf.param.set_value('velCtlPid.vyKFF', '1.0') #0
     scf.cf.param.set_value('velCtlPid.vyKp', '5.0') #4 tested:5
     scf.cf.param.set_value('velCtlPid.vyKi', '0.9') #0.5 tested: 0.9
-    scf.cf.param.set_value('velCtlPid.vyKd', '0.2') #0  tested: 0.2
-    scf.cf.param.set_value('velCtlPid.vzKp', '12.5') #12.5
+    scf.cf.param.set_value('velCtlPid.vyKd', '0.5') #0  tested: 0.2
+    scf.cf.param.set_value('velCtlPid.vzKp', '9.0') #12.5
     scf.cf.param.set_value('velCtlPid.vzKi', '5.0') #5
-    scf.cf.param.set_value('velCtlPid.vzKd', '0.0') #0
+    scf.cf.param.set_value('velCtlPid.vzKd', '0.2') #0
 
     #MAX VELOCITIES
-    scf.cf.param.set_value('posCtlPid.xBodyVelMax', '1.0') #3
-    scf.cf.param.set_value('posCtlPid.yBodyVelMax', '1.0') #3
-    scf.cf.param.set_value('posCtlPid.zVelMax', '1.0') #3
+    scf.cf.param.set_value('posCtlPid.xBodyVelMax', '3.0') #3
+    scf.cf.param.set_value('posCtlPid.yBodyVelMax', '3.0') #3
+    scf.cf.param.set_value('posCtlPid.zVelMax', '3.0') #3
 
     #PITCH, ROLL & YAW 
     scf.cf.param.set_value('pid_attitude.yawFeedForw', '0') #220
@@ -336,7 +304,7 @@ def set_control_parameters_Bolt(scf):
     scf.cf.param.set_value('pid_rate.pitch_kp', '70.0')  #70
     scf.cf.param.set_value('pid_rate.pitch_ki', '0')  
     scf.cf.param.set_value('pid_rate.pitch_kd', '0') 
-    scf.cf.param.set_value('pid_rate.roll_kp', '50.0')  #50
+    scf.cf.param.set_value('pid_rate.roll_kp', '65.0')  #50
     scf.cf.param.set_value('pid_rate.roll_ki', '0')   
     scf.cf.param.set_value('pid_rate.roll_kd', '0')   
     scf.cf.param.set_value('pid_rate.yaw_kp', '100.0')   #80 
@@ -452,9 +420,11 @@ def velocity_control_callback(timestamp, data, logconf):
     tar_vx = data["posCtl.targetVX"]
     tar_vy = data["posCtl.targetVY"]
     tar_vz = data["posCtl.targetVZ"]
+    t_base = data["posCtl.thrustBase"]
     TAR_VX.append(tar_vx)
     TAR_VY.append(tar_vy)
     TAR_VZ.append(tar_vz)
+    THRUST_BASE.append(t_base)
 
 def attitude_control_callback(timestamp, data, logconf):
     print('[%d]: %s' % (timestamp, data), file=f)
@@ -532,6 +502,7 @@ if __name__ == '__main__':
     log_vel_ctrl.add_variable('posCtl.targetVX', 'float')
     log_vel_ctrl.add_variable('posCtl.targetVY', 'float')
     log_vel_ctrl.add_variable('posCtl.targetVZ', 'float')
+    log_vel_ctrl.add_variable('posCtl.thrustBase', 'float')
 
     log_thrust = LogConfig(name= 'controller', period_in_ms=20)
     log_thrust.add_variable('controller.actuatorThrust', 'float')
@@ -621,21 +592,26 @@ if __name__ == '__main__':
             time.sleep(0.2)
 
 
-            for position in sequence:
-                print('Setting position {}'.format(position))
-                print('Battery voltage {}' .format(vbat)) 
-                x = position[0] + initial_x
-                y = position[1] + initial_y
-                z = position[2] + initial_z
-                yaw = position[3]
-                t = position[4]
-                commander.go_to(x, y, z, yaw, t)
-                time.sleep(t)
+            commander.go_to(initial_x,initial_y, h, 0, 2)
+            time.sleep(4)
+            for i in range(5):
+                for position in sequence:
+                    print('Setting position {}'.format(position))
+                    print('Battery voltage {}' .format(vbat)) 
+                    x = position[0] + initial_x
+                    y = position[1] + initial_y
+                    z = position[2] + initial_z
+                    yaw = position[3]
+                    t = position[4]
+                    commander.go_to(x, y, z, yaw, 2.5)
+                    time.sleep(t)
 
-            #commander.go_to(initial_x, initial_y, initial_z, 0.0, 2)
-            #time.sleep(2.0)
-            commander.land(initial_z - 0.5, 3.0, yaw= landing_yaw)
+            commander.go_to(initial_x, initial_y, 0.5*h, 0.0, 3)
             time.sleep(3.0)
+
+            #commander.go_to(initial_x,initial_y, 0.6, 0, 6)
+            commander.land(initial_z - 0.5, 3, yaw= landing_yaw)
+            time.sleep(3)
             commander.stop()
 
             log_vbat.stop()
@@ -732,6 +708,7 @@ if __name__ == '__main__':
             plt.figure(5)
             plt.plot(THRUST)
             plt.plot(TAR_THRUST)
+            plt.plot(THRUST_BASE)
             plt.grid()
             plt.legend(["est", "cmd"])
 

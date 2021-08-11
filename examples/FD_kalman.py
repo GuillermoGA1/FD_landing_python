@@ -99,6 +99,7 @@ TAR_PITCH = []
 TAR_YAW = []
 
 THRUST = []
+THRUST_BASE = []
 TAR_THRUST = []
 BATTERY = []
 
@@ -107,8 +108,8 @@ BATTERY = []
 # Change the sequence according to your setup
 #             x    y    z
 
-a = 2.5 #length of side
-h = 1.5 #height
+a = 2.0 #length of side
+h = 1 #height
 pi = 3.1416
 sequence = [
     #square
@@ -168,11 +169,33 @@ sequence = [
     #hover
     #(0, 0, h, 0),
     #(0, 0, h, 0),
-    (0, 0, h, 0, 4),
-    (a, 0, h, 0, 6),
-    (a, 0, 1.5*h, 0, 3),
-    (2*a, 0, 1.5*h, 0, 6),
-    (2*a, 0, 0.5*h, 0, 4),
+    (0, 0, h, 0, 5),
+    #(a, 0, h, 0, 5),
+    #(a, 0, h, 0, 11),
+    (0, a, h, 0, 2),
+    (0, a, h, 0, 10),
+    (0, 0, h, 0, 2),
+    (0, 0, h, 0, 10),
+    #(0, a, h, 0, 2),
+    #(0, a, h, 0, 10),
+    #(0, 0, h, 0, 2),
+    #(0, 0, h, 0, 10),
+    (0, 0, 0.5*h, 0, 3),
+    #(0, 0, h, 0, 11),
+    #(0, 0, 1.5*h, 0, 5),
+    #(0, 0, h, 0 , 1),
+    #(0, 0, h, 0, 10),
+    #(0, 0, 0.5*h, 0, 1),
+    #(0, 0, 0.5*h, 0, 5),
+    #(0, 0, 0.25*h, 0, 1),
+    #(0, 0, 0.25*h, 0, 5),
+    #(a, 0, 1.5*h, 0, 4.5),
+    #(a, 0, 2*h, 0, 4.5),
+    #(a, 0, 3*h, 0, 4.5),
+    #(0, 0, 2*h, 0, 6),
+    #(a, 0, 1.5*h, 0, 3),
+    #(2*a, 0, 1.5*h, 0, 6),
+    #(2*a, 0, 0.5*h, 0, 4),
     #(a, a, h, 0, 6),
     #(0, a, h, 0, 6),
     #(0, 0, h, 0, 6),
@@ -194,12 +217,13 @@ sequence = [
     #    (0, 0, 0),
 ]
 
-origin = [-3.9, 0, -0.2]
-initial_x = -3.9
+origin = [0, 0, 0]
+initial_x = 0
 initial_y = 0
-initial_z = -0.2
+initial_z = 0
 initial_yaw = 0  # In degrees
 landing_yaw = 0
+
 # 0: positive X direction
 # 90: positive Y direction
 # 180: negative X direction
@@ -270,66 +294,66 @@ def set_control_parameters_Bolt(scf):
     scf.cf.param.set_value('attFilt.attFiltCut', '15.0') #15.0
 
     # # Double loop in-body control
-    scf.cf.param.set_value('posCtlPid.singleLoop', '0')
-    scf.cf.param.set_value('posVelFilt.posFiltEn', '0')
+    #scf.cf.param.set_value('posCtlPid.singleLoop', '0')
+    scf.cf.param.set_value('posVelFilt.posFiltEn', '1')
     scf.cf.param.set_value('posVelFilt.posFiltCut', '5.0') #5
-    scf.cf.param.set_value('posVelFilt.velFiltEn', '0')
+    scf.cf.param.set_value('posVelFilt.velFiltEn', '1')
     scf.cf.param.set_value('posVelFilt.velFiltCut', '10.0') #10
     scf.cf.param.set_value('posVelFilt.posZFiltEn', '1')  #0
     scf.cf.param.set_value('posVelFilt.posZFiltCut', '5.0') #5
     scf.cf.param.set_value('posVelFilt.velZFiltEn', '1')    #1
     scf.cf.param.set_value('posVelFilt.velZFiltCut', '5.0') #10
-    #scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
+    scf.cf.param.set_value('posCtlPid.thrustBase', hover_thrust)
     scf.cf.param.set_value('posCtlPid.thrustMin', '15000')
 
     #POSITION
     scf.cf.param.set_value('posCtlPid.xKp', '4.0') #4 6 test_good: 7
     scf.cf.param.set_value('posCtlPid.xKi', '0.0') #0 test_good: 0
     scf.cf.param.set_value('posCtlPid.xKd', '0.0') #0   test_good 1.0
-    scf.cf.param.set_value('posCtlPid.yKp', '5.0') #2.5
+    scf.cf.param.set_value('posCtlPid.yKp', '3.0') #2.5
     scf.cf.param.set_value('posCtlPid.yKi', '0.0') #0
     scf.cf.param.set_value('posCtlPid.yKd', '0.0') #0 
     scf.cf.param.set_value('posCtlPid.zKp', '5.0') #5 
-    scf.cf.param.set_value('posCtlPid.zKi', '0.5') #0.5
-    scf.cf.param.set_value('posCtlPid.zKd', '0') #0
+    scf.cf.param.set_value('posCtlPid.zKi', '0.5') #0.5,, 2.0
+    scf.cf.param.set_value('posCtlPid.zKd', '0') #0, 1.0
     scf.cf.param.set_value('posCtlPid.rLimit', '45.0') #25
     scf.cf.param.set_value('posCtlPid.pLimit', '40.0') #25
 
     #VELOCITY
-    scf.cf.param.set_value('velCtlPid.vxKFF', '2.5') #0 tested: 2.0
-    scf.cf.param.set_value('velCtlPid.vxKp', '10.0') #4   tested: 6
-    scf.cf.param.set_value('velCtlPid.vxKi', '0.8') #0.5 tested:1.5
-    scf.cf.param.set_value('velCtlPid.vxKd', '0.1') #0 tested: 0.1
-    scf.cf.param.set_value('velCtlPid.vyKFF', '2.0') #0
-    scf.cf.param.set_value('velCtlPid.vyKp', '3.0') #4 tested:5
-    scf.cf.param.set_value('velCtlPid.vyKi', '0.5') #0.5 tested: 0.9
-    scf.cf.param.set_value('velCtlPid.vyKd', '0.2') #0  tested: 0.2
-    scf.cf.param.set_value('velCtlPid.vzKp', '12.5') #12.5
+    scf.cf.param.set_value('velCtlPid.vxKFF', '1.0') #0 tested: 2.0
+    scf.cf.param.set_value('velCtlPid.vxKp', '4.0') #4   tested: 6, 10
+    scf.cf.param.set_value('velCtlPid.vxKi', '0.9') #0.5 tested:1.5
+    scf.cf.param.set_value('velCtlPid.vxKd', '0.5') #0 tested: 0.1
+    scf.cf.param.set_value('velCtlPid.vyKFF', '1.0') #0
+    scf.cf.param.set_value('velCtlPid.vyKp', '5.0') #4 tested:5
+    scf.cf.param.set_value('velCtlPid.vyKi', '0.9') #0.5 tested: 0.9
+    scf.cf.param.set_value('velCtlPid.vyKd', '0.5') #0  tested: 0.2
+    scf.cf.param.set_value('velCtlPid.vzKp', '9.0') #12.5
     scf.cf.param.set_value('velCtlPid.vzKi', '5.0') #5
-    scf.cf.param.set_value('velCtlPid.vzKd', '0.0') #0
+    scf.cf.param.set_value('velCtlPid.vzKd', '0.2') #0
 
     #MAX VELOCITIES
-    scf.cf.param.set_value('posCtlPid.xBodyVelMax', '1.0') #3
-    scf.cf.param.set_value('posCtlPid.yBodyVelMax', '1.0') #3
-    scf.cf.param.set_value('posCtlPid.zVelMax', '1.0') #3
+    scf.cf.param.set_value('posCtlPid.xBodyVelMax', '3.0') #3
+    scf.cf.param.set_value('posCtlPid.yBodyVelMax', '3.0') #3
+    scf.cf.param.set_value('posCtlPid.zVelMax', '3.0') #3
 
     #PITCH, ROLL & YAW 
     scf.cf.param.set_value('pid_attitude.yawFeedForw', '0') #220
     scf.cf.param.set_value('pid_attitude.pitch_kp', '10.0') #13  test_good:15
     scf.cf.param.set_value('pid_attitude.pitch_ki', '7.0')  #0  test:12.5
     scf.cf.param.set_value('pid_attitude.pitch_kd', '2.0')  #1    test:1 
-    scf.cf.param.set_value('pid_attitude.roll_kp', '7.0')  #15   test:10
-    scf.cf.param.set_value('pid_attitude.roll_ki', '0.5')   #0    test:1
-    scf.cf.param.set_value('pid_attitude.roll_kd', '0.2')   #1    test:0.2
+    scf.cf.param.set_value('pid_attitude.roll_kp', '10.0')  #15   test:10
+    scf.cf.param.set_value('pid_attitude.roll_ki', '1')   #0    test:1
+    scf.cf.param.set_value('pid_attitude.roll_kd', '0.5')   #1    test:0.2
     scf.cf.param.set_value('pid_attitude.yaw_kp', '45.0')   #30   test:45
     scf.cf.param.set_value('pid_attitude.yaw_ki', '0')   #0    test:20
-    scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0')    #1    test:1
+    scf.cf.param.set_value('pid_attitude.yaw_kd', '1.0')    #1    
 
     #ATTITUDE RATES
     scf.cf.param.set_value('pid_rate.pitch_kp', '70.0')  #70
     scf.cf.param.set_value('pid_rate.pitch_ki', '0')  
     scf.cf.param.set_value('pid_rate.pitch_kd', '0') 
-    scf.cf.param.set_value('pid_rate.roll_kp', '50.0')  #50
+    scf.cf.param.set_value('pid_rate.roll_kp', '65.0')  #50
     scf.cf.param.set_value('pid_rate.roll_ki', '0')   
     scf.cf.param.set_value('pid_rate.roll_kd', '0')   
     scf.cf.param.set_value('pid_rate.yaw_kp', '100.0')   #80 
@@ -409,7 +433,7 @@ def attitude_estimate_callback(timestamp, data, logconf):
 
 def position_estimate_callback(timestamp, data, logconf):
   #  print('[%d]: %s' % (timestamp, data), file=f)
-    position_x = data["stateEstimate.x"]
+    position_x = data["stateEstimate.x"] #"stateEstimate.x"
     position_y = data["stateEstimate.y"]
     position_z = data["stateEstimate.z"]
     POSITION_X.append(position_x)
@@ -439,9 +463,11 @@ def velocity_control_callback(timestamp, data, logconf):
     tar_vx = data["posCtl.targetVX"]
     tar_vy = data["posCtl.targetVY"]
     tar_vz = data["posCtl.targetVZ"]
+    t_base = data["posCtl.thrustBase"]
     TAR_VX.append(tar_vx)
     TAR_VY.append(tar_vy)
     TAR_VZ.append(tar_vz)
+    THRUST_BASE.append(t_base)
 
 def attitude_control_callback(timestamp, data, logconf):
  #   print('[%d]: %s' % (timestamp, data), file=f)
@@ -559,6 +585,7 @@ if __name__ == '__main__':
     log_vel_ctrl.add_variable('posCtl.targetVX', 'float')
     log_vel_ctrl.add_variable('posCtl.targetVY', 'float')
     log_vel_ctrl.add_variable('posCtl.targetVZ', 'float')
+    log_vel_ctrl.add_variable('posCtl.thrustBase', 'float')
 
     log_compl_estimate = LogConfig(name='stateEstimate', period_in_ms=20)
     log_compl_estimate.add_variable('stateEstimate.roll_compl', 'float')
@@ -683,30 +710,33 @@ if __name__ == '__main__':
             # unlock the engines
             # cf.commander.send_setpoint(0, 0, 0, 0)
             #
+
+
+            #scf.cf.param.set_value('usd.logging', '1') 
+            
             
             activate_high_level_commander(cf)
             time.sleep(0.2)
             commander = cf.high_level_commander
-            
             commander.takeoff(-0.5, 0.001) # setting the setpoint underground to spinup the motors before taking off
             time.sleep(0.01)
             commander.go_to(origin[0], origin[1], origin[2]-0.5, initial_yaw, 0.01) # (re)set the setpoint, sometimes xy stays at [0,0]
             time.sleep(0.2)
             commander.go_to(origin[0], origin[1], origin[2], initial_yaw, 1.5)
             time.sleep(0.2)
+            for m in range(1):
+                for position in sequence:
+                    print('Setting position {}'.format(position))
+                    print('Battery voltage {}'.format(vbat))
 
-            for position in sequence:
-                print('Setting position {}'.format(position))
-                print('Battery voltage {}'.format(vbat))
+                    x = position[0] + initial_x
+                    y = position[1] + initial_y
+                    z = position[2] + initial_z
+                    yaw = position[3]
+                    t = position[4]
 
-                x = position[0] + initial_x
-                y = position[1] + initial_y
-                z = position[2] + initial_z
-                yaw = position[3]
-                t = position[4]
-
-                commander.go_to(x, y, z, yaw, t)
-                time.sleep(t)
+                    commander.go_to(x, y, z, yaw, t)
+                    time.sleep(t)
 
 
 
@@ -717,7 +747,7 @@ if __name__ == '__main__':
             commander.stop()
             
             
-            #time.sleep(40)
+            #time.sleep(10)
             log_pos_estimate.stop()
             log_vel_estimate.stop()
             log_att_estimate.stop()
@@ -726,6 +756,8 @@ if __name__ == '__main__':
             log_att_ctrl.stop()
             log_compl_estimate.stop()
             log_thrust.stop
+
+            #scf.cf.param.set_value('usd.logging', '0') 
 
             '''
             log_att_estimate.stop()
@@ -816,6 +848,7 @@ if __name__ == '__main__':
 
             plt.figure(5)
             plt.plot(THRUST)
+            plt.plot(THRUST_BASE)
             plt.grid()
 
     

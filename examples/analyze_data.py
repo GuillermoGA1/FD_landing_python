@@ -28,11 +28,12 @@ PITCH_TAR = []
 YAW_TAR = []
 THRUST = []
 THRUST_TAR = []
+THRUST_BASE = []
 BATTERY = []
 
 
-txt_file = "battery_hover_20210506-132057"
-with open("/home/guillermoga/office/" + txt_file  + ".txt") as f:
+txt_file = "z_good_step2"
+with open("/home/guillermoga/validation/Good/" + txt_file  + ".txt") as f:
     for line in f:
         values = line.split()
         values.pop(0)
@@ -80,10 +81,12 @@ with open("/home/guillermoga/office/" + txt_file  + ".txt") as f:
         if "posCtl.targetVX" in line: #posCtl.targetX or ctrltarget.x
             vx = values[1].replace(',', '')
             vy = values[3].replace(',', '')
-            vz = values[5].replace('}', '')
+            vz = values[5].replace(',', '')
+            t_base = values[7].replace('}', '')
             VX_TAR.append(float(vx))
             VY_TAR.append(float(vy))
             VZ_TAR.append(float(vz))
+            THRUST_BASE.append(float(t_base))
         
         if "controller.actuatorThrust" in line:
             thrust = values[1].replace(',', '')
@@ -101,16 +104,35 @@ print(len(X_TAR), len(Y_TAR), len(Z_TAR), len(VX_TAR), len(VY_TAR), len(VZ_TAR),
 print(len(THRUST),len(BATTERY))
 
 if create_scv:
-    with open("/home/guillermoga/Desktop/csv_files/" + txt_file + ".csv", mode='w') as csv_file:
+    with open("/home/guillermoga/validation/Good/" + txt_file + ".csv", mode='w') as csv_file:
         writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(["X", "Y", "Z", "VX", "VY", "VZ", "Roll", "Pitch", "Yaw", "Target X", "Target Y", "Target Z", "Target VX", "Target VY",
-                        "Target VZ", "Target Roll", "Target Pitch", "Target Yaw", "Thrust", "Target Thrust", "Battery"])
+                        "Target VZ", "Target Roll", "Target Pitch", "Target Yaw", "Thrust", "Thrust base", "Target Thrust", "Battery"])
 
         for i in range(len(X_TAR)):
             writer.writerow([X[i], Y[i], Z[i], VX[i], VY[i], VZ[i], ROLL[i], PITCH[i], YAW[i], X_TAR[i], Y_TAR[i], Z_TAR[i],
-                          VX_TAR[i], VY_TAR[i], VZ_TAR[i], ROLL_TAR[i], PITCH_TAR[i], YAW_TAR[i], THRUST[i],THRUST_TAR[i], BATTERY[i]])
+                          VX_TAR[i], VY_TAR[i], VZ_TAR[i], ROLL_TAR[i], PITCH_TAR[i], YAW_TAR[i], THRUST[i], THRUST_BASE[i], THRUST_TAR[i], BATTERY[i]])
                          
 
+
+
+'''
+VX2 = []
+VY2 = []
+VZ2 = []
+
+for i in range(1,len(X)):
+    vx2 = (X[i] - X[i-1])/ 0.05
+    VX2.append(vx2)
+
+for i in range(1,len(Y)):
+    vy2 = (Y[i] - Y[i-1])/ 0.05
+    VY2.append(vy2)
+
+for i in range(1,len(X)):
+    vz2 = (Z[i] - Z[i-1])/ 0.05
+    VZ2.append(vz2)
+'''
 
 
 fig, axs = plt.subplots(3, 3)
@@ -159,23 +181,6 @@ axs[2, 2].plot(YAW_TAR)
 axs[2, 2].grid()
 axs[2, 2].legend(["est", "cmd"])
 axs[2, 2].set_title("Yaw")
-plt.show()
-
-VX2 = []
-VY2 = []
-VZ2 = []
-
-for i in range(1,len(X)):
-    vx2 = (X[i] - X[i-1])/ 0.05
-    VX2.append(vx2)
-
-for i in range(1,len(Y)):
-    vy2 = (Y[i] - Y[i-1])/ 0.05
-    VY2.append(vy2)
-
-for i in range(1,len(X)):
-    vz2 = (Z[i] - Z[i-1])/ 0.05
-    VZ2.append(vz2)
 
 
 plt.figure(3)
@@ -189,6 +194,7 @@ plt.grid()
 plt.figure(5)
 plt.plot(THRUST)
 plt.plot(THRUST_TAR)
+plt.plot(THRUST_BASE)
 plt.grid()
 plt.legend(["est", "cmd"])
 
